@@ -7,14 +7,10 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,26 +24,30 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
     private int chancesLeft = 0;
     private String actualMovie;
     private String displayMovie;
+    String MovieId, language;
     boolean win,lost;
     private int uniqueChar =0;
     public Intent returnIntent;
     List<String> wrongGuesses = new ArrayList<String>(Arrays.asList("B","O","L","L1","Y","W","O","O","D"));
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_logic);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         actualMovie = (intent.getStringExtra("Movie")).toUpperCase();
+        MovieId = intent.getStringExtra("MovieId");
+        language = intent.getStringExtra("Language");
+        if(language.equals("English")){
+            ((TextView) findViewById(R.id.B)).setText("H");
+        }
         displayMovie = actualMovie;
         displayMovie = getBlanks(displayMovie);
         TextView t = (TextView) findViewById(R.id.display);
         t.setText(displayMovie);
-        uniqueChar = countUniqueCharacters(actualMovie);
+        String movieWithoutSpaces= actualMovie.replaceAll("\\s","");
+        uniqueChar = countUniqueCharacters(movieWithoutSpaces);
         populateButtons();
 
         returnIntent = new Intent();
@@ -79,7 +79,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             cb.setTextColor(Color.parseColor("white"));
             cb.setTextSize(25);
             cb.setOnClickListener(this);
-            cb.setBackgroundColor(Color.parseColor("red"));
+            cb.setBackgroundColor(Color.parseColor("#D9411E"));
             if (guessedLetters.contains("" + buttonChar)) {
                 cb.setBackgroundColor(Color.parseColor("#858585"));
                 cb.setOnClickListener(null);
@@ -107,7 +107,8 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             if(guessedLetters.size() == uniqueChar){
                 win = true;
                 Toast.makeText(GameLogic.this, "Won the Match!", Toast.LENGTH_SHORT).show();
-                returnIntent.putExtra("Status","Win");
+                returnIntent.putExtra("Status", "WON");
+                returnIntent.putExtra("Movie", actualMovie);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
 
@@ -115,14 +116,15 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
 
         }
         else{
-            if(chancesLeft <= 9){
+            if(chancesLeft < 9){
                 chancesLeft++;
                 fade( findViewById(R.id.view_game));
             }
             else {
                 lost = true;
                 Toast.makeText(GameLogic.this, "Lost the Match!", Toast.LENGTH_SHORT).show();
-                returnIntent.putExtra("Status", "Lost");
+                returnIntent.putExtra("Status", "LOST");
+                returnIntent.putExtra("Movie", actualMovie);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
             }
@@ -144,6 +146,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
 
     public String getBlanks(String movie){
         String tempStr="";
+        String vowels = "AEIOU";
         for(int i=0;i<movie.length();i++){
             if (!guessedLetters.contains("" + movie.charAt(i))) {
                 if(movie.charAt(i) == ' '){
@@ -151,7 +154,12 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
                     //movie.replace("" + movie.charAt(i), "/ ");
                 }
                 else{
-                    tempStr = tempStr + "_ ";
+                    if(vowels.indexOf(movie.charAt(i)) >= 0) {
+                        tempStr = tempStr + movie.charAt(i) + " ";
+                        guessedLetters.add(Character.toString(movie.charAt(i)));
+                    }
+                    else
+                        tempStr = tempStr + "_ ";
                    // movie = movie.replace("" + movie.charAt(i),"_ ");
                 }
             }
@@ -169,51 +177,32 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void fade(View view){
-        TextView Bollywood = (TextView)findViewById(R.id.B) ;
+        ChancesLeft leftObj = (ChancesLeft) this.findViewById(R.id.ChanceB);
         switch(chancesLeft){
-            case 1: Bollywood = (TextView)findViewById(R.id.B);
+            case 1: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceB);
                     break;
-            case 2: Bollywood = (TextView)findViewById(R.id.O);
+            case 2: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceO1);
                 break;
-            case 3: Bollywood = (TextView)findViewById(R.id.L);
+            case 3: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceL1);
                 break;
-            case 4: Bollywood = (TextView)findViewById(R.id.L1);
+            case 4: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceL2);
                 break;
-            case 5: Bollywood = (TextView)findViewById(R.id.Y);
+            case 5: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceY);
                 break;
-            case 6: Bollywood = (TextView)findViewById(R.id.W);
+            case 6: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceW);
                 break;
-            case 7: Bollywood = (TextView)findViewById(R.id.O1);
+            case 7: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceO2);
                 break;
-            case 8: Bollywood = (TextView)findViewById(R.id.O2);
+            case 8:leftObj = (ChancesLeft) this.findViewById(R.id.ChanceO3);
                 break;
-            case 9: Bollywood = (TextView)findViewById(R.id.D);
+            case 9: leftObj = (ChancesLeft) this.findViewById(R.id.ChanceD);
                 break;
         }
-
-        /*Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
-        int MAX_LEVEL = 10000;
-        //Bollywood.setAnimation(animation1);
-        Bollywood.startAnimation(animation1);*/
-
-
-       /* Drawable[] myTextViewCompoundDrawables = Bollywood.getCompoundDrawables();
-        for(Drawable drawable: myTextViewCompoundDrawables) {
-
-            if (drawable == null)
-                continue;
-
-            ObjectAnimator anim = ObjectAnimator.ofFloat(drawable, "alpha", 0f, 1f);
-            anim.setDuration(1000);
-            anim.start();
-        }*/
-
-        ImageView test = (ImageView) findViewById(R.id.test);
-        test.setVisibility(View.VISIBLE);
-        test.getBackground().setAlpha(255);
-        Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fade);
-        test.startAnimation(animation1);
+        leftObj.drawStrike();
 
     }
 }
+
+
+
 

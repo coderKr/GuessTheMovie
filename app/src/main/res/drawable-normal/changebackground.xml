@@ -1,0 +1,9 @@
+<animation-list
+    android:id="@+id/selected"
+    android:oneshot="false"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <set android:alpha=".75"></set>
+    <item android:drawable="@drawable/poster1" android:duration="2000"></item>
+    <item android:drawable="@drawable/poster2" android:duration="2000"></item>
+    <item android:drawable="@drawable/poster3" android:duration="2000"></item>
+</animation-list>

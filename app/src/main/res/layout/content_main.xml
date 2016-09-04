@@ -1,7 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/background"
+        android:background="@color/colorBkgd2"
+        android:alpha=".75"
+       />
 
     <LinearLayout
         android:id="@+id/login_layout"
@@ -29,99 +37,9 @@
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="200dp"
-            android:layout_height="wrap_content" >
+            android:layout_height="wrap_content"
+            style="@style/Button1">
         </com.google.android.gms.common.SignInButton>
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/gameplay_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:visibility="gone"
-        tools:context=".SkeletonActivity" >
-
-        <TextView
-            android:id="@+id/instructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/match_instructions"
-            android:textAppearance="@style/HelpText"
-            android:width="300dp" />
-
-        <TextView
-            android:id="@+id/turn_counter_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/turn_counter"
-            android:textAppearance="@style/GuessWordText"
-            android:width="300dp" />
-
-        <EditText
-            android:id="@+id/data_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="@dimen/activity_vertical_margin"
-            android:background="#FFFFFFFF"
-            android:gravity="center"
-            android:inputType="textEmailAddress|textEmailSubject"
-            android:maxLines="1"
-            android:text="@string/hello_world"
-            android:textAppearance="@style/GuessWordText" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/doneButton"
-                android:layout_width="170dp"
-                android:layout_height="wrap_content"
-                android:onClick="onDoneClicked"
-                android:padding="@dimen/activity_vertical_margin"
-                android:text="@string/done"
-                android:textAppearance="@style/HelpText.Heading"
-                tools:ignore="ButtonStyle" />
-
-            <Button
-                android:id="@+id/cancelButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onCancelClicked"
-                android:text="@string/cancel"
-                android:textAppearance="@style/HelpText.Heading"
-                tools:ignore="ButtonStyle" />
-
-            <Button
-                android:id="@+id/leaveButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onLeaveClicked"
-                android:text="@string/leave"
-                android:textAppearance="@style/HelpText.Heading"
-                tools:ignore="ButtonStyle" />
-
-            <Button
-                android:id="@+id/finishButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:onClick="onFinishClicked"
-                android:text="@string/finish"
-                android:textAppearance="@style/HelpText.Heading"
-                tools:ignore="ButtonStyle" />
-        </LinearLayout>
     </LinearLayout>
 
     <RelativeLayout
@@ -131,56 +49,63 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="vertical"
-        android:visibility="gone"
+        android:visibility="visible"
         tools:context=".SkeletonActivity" >
 
-        <LinearLayout
-            android:id="@+id/secret_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            android:visibility="visible"
-            tools:context=".SkeletonActivity"
-            tools:ignore="UselessParent" >
-
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:id="@+id/background1"
+            android:background="@color/colorBkgd2"
+            android:alpha="1"
+            />
             <TextView
                 android:id="@+id/name_field"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_margin="@dimen/margin_small"
-                android:text=""
-                android:textAppearance="@style/HelpText.Caption" />
+                android:textSize="17dp"
+                android:text="" />
 
             <Button
                 android:id="@+id/sign_out_button"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:text="@string/sign_out" />
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:layout_marginBottom="30dp"
+                android:text="@string/sign_out"
+                android:layout_below="@+id/background1"
+                style="@style/Button1"/>
 
             <Button
                 android:id="@+id/startMatchButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
                 android:onClick="onStartMatchClicked"
-                android:text="@string/start_match" />
+                android:text="@string/start_match"
+                android:layout_toRightOf="@+id/sign_out_button"
+                android:layout_below="@+id/background1"
+                style="@style/Button1"/>
 
             <Button
                 android:id="@+id/checkGamesButton"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
                 android:onClick="onCheckGamesClicked"
-                android:text="@string/check_games" />
+                android:text="@string/check_games"
+                android:layout_below="@+id/sign_out_button"
+                style="@style/Button1"/>
 
-            <Button
-                android:id="@+id/quickMatchButon"
-                android:layout_width="200dp"
-                android:layout_height="wrap_content"
-                android:onClick="onQuickMatchClicked"
-                android:text="@string/quick_match" />
-        </LinearLayout>
+        <Button
+            android:id="@+id/showLeadershipBoard"
+            android:layout_width="160dp"
+            android:layout_height="100dp"
+            android:onClick="onShowLeaderboardsRequested"
+            android:text="Scores"
+            style="@style/Button1"
+            android:layout_below="@+id/sign_out_button"
+            android:layout_toRightOf="@id/checkGamesButton"/>
+
     </RelativeLayout>
 
     <RelativeLayout

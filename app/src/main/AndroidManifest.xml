@@ -19,7 +19,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -42,23 +41,19 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <activity
-            android:name=".ChoosePlayerStartGame"
-            android:label="@string/title_activity_choose_player_start_game"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
-        </activity>
         <activity
             android:name=".GameLogic"
-            android:label="@string/title_activity_game_logic"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".StartMatch"
-            android:label="@string/title_activity_start_match"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data android:name="android.app.searchable" android:resource="@xml/searchable"/>
+        </activity>
+        <activity
+            android:name=".GameResult"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
