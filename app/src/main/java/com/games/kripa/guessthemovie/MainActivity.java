@@ -27,6 +27,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -49,6 +52,7 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
 import com.google.android.gms.plus.Plus;
+import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 
@@ -70,7 +74,7 @@ import java.util.ArrayList;
  *
  * @author Wolff (wolff@google.com), 2013
  */
-public class MainActivity extends Activity
+public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         OnInvitationReceivedListener, OnTurnBasedMatchUpdateReceivedListener,
         View.OnClickListener {
@@ -132,17 +136,30 @@ public class MainActivity extends Activity
     String otherStatus="";
     String language="";
     String playerIdDb = "";
+    ViewPager viewPager;
+    PagerAdapter pageAdapter;
+    CirclePageIndicator mIndicator;
+    int [] moviePosters;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         scores = new ScoreDbHelper(getApplicationContext());
+
         //
         // scores.onCreate();
 
-
+        //Get latest movie posters
+        getLatestMoviePosters();
+        moviePosters = new int[] {R.drawable.poster1, R.drawable.poster2, R.drawable.poster3};
+        viewPager = (ViewPager) findViewById(R.id.pager);
+        pageAdapter = new ViewPagerAdapter(MainActivity.this, moviePosters);
+        viewPager.setAdapter(pageAdapter);
+        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+        mIndicator.setViewPager(viewPager);
         // Load the ImageView that will host the animation and
         // set its background to our AnimationDrawable XML resource.
         ImageView img = (ImageView)findViewById(R.id.background);
@@ -1074,6 +1091,11 @@ public class MainActivity extends Activity
     public static void showAlert(Activity activity, String message) {
         (new AlertDialog.Builder(activity)).setMessage(message)
                 .setNeutralButton(android.R.string.ok, null).create().show();
+    }
+
+    public void getLatestMoviePosters(){
+        //TmdbMovies movies = new TmdbApi("36073b90b4180c75881e92624e72ec3c").getMovies();
+       // MovieDb movie = movies.getMovie(5353, "en");
     }
 
 }

@@ -51,14 +51,24 @@
         android:orientation="vertical"
         android:visibility="visible"
         tools:context=".SkeletonActivity" >
-
-        <ImageView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="250dp"
-            android:id="@+id/background1"
-            android:background="@color/colorBkgd2"
-            android:alpha="1"
-            />
+            android:id="@+id/slideshow"
+            android:orientation="vertical"
+            android:theme="@style/StyledIndicators">
+            <android.support.v4.view.ViewPager
+                android:id="@+id/pager"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/indicator"
+                android:layout_width="fill_parent"
+                android:layout_height="5dp" />
+        </LinearLayout>
+
             <TextView
                 android:id="@+id/name_field"
                 android:layout_width="wrap_content"
@@ -74,7 +84,7 @@
                 android:layout_height="100dp"
                 android:layout_marginBottom="30dp"
                 android:text="@string/sign_out"
-                android:layout_below="@+id/background1"
+                android:layout_below="@+id/slideshow"
                 style="@style/Button1"/>
 
             <Button
@@ -84,7 +94,7 @@
                 android:onClick="onStartMatchClicked"
                 android:text="@string/start_match"
                 android:layout_toRightOf="@+id/sign_out_button"
-                android:layout_below="@+id/background1"
+                android:layout_below="@+id/slideshow"
                 style="@style/Button1"/>
 
             <Button

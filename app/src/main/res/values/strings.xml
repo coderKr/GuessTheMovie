@@ -44,6 +44,7 @@
     <string name="action_search">Search</string>
     <string name="search_hint">Search Movies</string>
     <string name="search_settings">Search Movies</string>
+    <string name="title_activity_main3">Main3Activity</string>
 
 
 </resources>
