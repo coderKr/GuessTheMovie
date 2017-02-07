@@ -1,5 +1,7 @@
 <resources>
-    <string name="app_name">Bollywood Masti!!</string>
+    <string name="app_name">Filmy Masti</string>
+    <string name="app_name_filmy">Filmy</string>
+    <string name="app_name_masti">Masti</string>
     <string name="button_send">Validate</string>
     <string name="title_activity_choose_player_start_game">ChoosePlayerStartGame</string>
     <string name="title_activity_game_logic">GameLogic</string>

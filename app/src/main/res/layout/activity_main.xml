@@ -8,20 +8,102 @@
     android:fitsSystemWindows="true"
     tools:context="com.games.kripa.guessthemovie.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:popupTheme="@style/AppTheme.PopupOverlay"> </android.support.v7.widget.Toolbar>
-    </android.support.design.widget.AppBarLayout>
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/filmymastitoolbar"
+                />
+    </android.support.v7.widget.Toolbar>
 
-    <include layout="@layout/content_main" />
+        <RelativeLayout
+            android:id="@+id/matchup_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible"
+            tools:context=".SkeletonActivity" >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:id="@+id/slideshow"
+                android:orientation="vertical"
+                android:theme="@style/StyledIndicators">
+                <!--android.support.v4.view.ViewPager
+                    android:id="@+id/pager"
+                    android:layout_width="fill_parent"
+                    android:layout_weight="1"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp" />
+                <com.viewpagerindicator.CirclePageIndicator
+                    android:id="@+id/indicator"
+                    android:layout_width="fill_parent"
+                    android:padding="10dip"
+                    android:layout_height="wrap_content" /-->
+                <com.daimajia.slider.library.SliderLayout
+                    android:id="@+id/slider"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    />
+                <com.daimajia.slider.library.Indicators.PagerIndicator
+                    android:id="@+id/custom_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    />
 
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/buttons_main_page"
+                android:gravity="center_vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/slideshow"
+                android:orientation="vertical">
+            <Button
+                android:id="@+id/startMatchButton"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:onClick="onStartMatchClicked"
+                android:text="@string/start_match"
+                android:layout_below="@+id/slideshow"
+                style="@style/Button1"
+                android:layout_marginBottom="2dp" />
 
+            <Button
+                android:id="@+id/showLeadershipBoard"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:onClick="onShowLeaderboardsRequested"
+                android:text="Scores"
+                style="@style/Button1"
+                android:layout_below="@+id/startMatchButton"
+                android:layout_marginBottom="2dp" />
+
+            <Button
+                android:id="@+id/checkGamesButton"
+                android:onClick="onCheckGamesClicked"
+                android:text="@string/check_games"
+                style="@style/Button1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_below="@+id/showLeadershipBoard"
+                android:layout_marginBottom="2dp" />
+            </LinearLayout>
+        </RelativeLayout>
+    <include layout="@layout/content_main"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"/>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

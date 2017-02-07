@@ -19,23 +19,28 @@ package com.games.kripa.guessthemovie;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.daimajia.slider.library.Indicators.PagerIndicator;
+import com.daimajia.slider.library.SliderLayout;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -138,40 +143,48 @@ public class MainActivity extends AppCompatActivity
     String playerIdDb = "";
     ViewPager viewPager;
     PagerAdapter pageAdapter;
+    String EXTRA_QUERY = "Query";
     CirclePageIndicator mIndicator;
     int [] moviePosters;
+    Toolbar mToolbar;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         scores = new ScoreDbHelper(getApplicationContext());
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.filmymastitoolbar);
+        getSupportActionBar().setIcon(R.drawable.filmymastitoolbar);
+
 
         //
         // scores.onCreate();
 
         //Get latest movie posters
         getLatestMoviePosters();
-        moviePosters = new int[] {R.drawable.poster1, R.drawable.poster2, R.drawable.poster3};
-        viewPager = (ViewPager) findViewById(R.id.pager);
-        pageAdapter = new ViewPagerAdapter(MainActivity.this, moviePosters);
-        viewPager.setAdapter(pageAdapter);
-        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setViewPager(viewPager);
+//        moviePosters = new int[] {R.drawable.poster1, R.drawable.poster2, R.drawable.poster3};
+//        viewPager = (ViewPager) findViewById(R.id.pager);
+//        pageAdapter = new ViewPagerAdapter(MainActivity.this, moviePosters);
+//        viewPager.setAdapter(pageAdapter);
+//        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
+//        mIndicator.setViewPager(viewPager);
         // Load the ImageView that will host the animation and
         // set its background to our AnimationDrawable XML resource.
-        ImageView img = (ImageView)findViewById(R.id.background);
-        img.setBackgroundResource(R.drawable.changebackground);
-        img.getBackground().setAlpha(60);
-        img.setAlpha(60);
+//        ImageView img = (ImageView)findViewById(R.id.background);
+//        img.setBackgroundResource(R.drawable.changebackground);
+//        img.getBackground().setAlpha(60);
+//        img.setAlpha(60);
 
         // Get the background, which has been compiled to an AnimationDrawable object.
-        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
-
-        // Start the animation (looped playback by default).
-        frameAnimation.start();
+//        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
+//
+//        // Start the animation (looped playback by default).
+//        frameAnimation.start();
 
         // Create the Google API Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -183,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         // Setup signin and signout buttons
-        findViewById(R.id.sign_out_button).setOnClickListener(this);
+        //findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
 
 
@@ -425,8 +438,8 @@ public class MainActivity extends AppCompatActivity
         }
 
 
-        ((TextView) findViewById(R.id.name_field)).setText("Hi " + Games.Players.getCurrentPlayer(
-                mGoogleApiClient).getDisplayName() + " !");
+//        ((TextView) findViewById(R.id.name_field)).setText("Hi " + Games.Players.getCurrentPlayer(
+//                mGoogleApiClient).getDisplayName() + " !");
         findViewById(R.id.login_layout).setVisibility(View.GONE);
 
         playerIdDb = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
@@ -1047,14 +1060,14 @@ public class MainActivity extends AppCompatActivity
                 //insertDb(playerIdDb);
 
                 break;
-            case R.id.sign_out_button:
-                mSignInClicked = false;
-                Games.signOut(mGoogleApiClient);
-                if (mGoogleApiClient.isConnected()) {
-                    mGoogleApiClient.disconnect();
-                }
-                setViewVisibility();
-                break;
+//            case R.id.sign_out_button:
+//                mSignInClicked = false;
+//                Games.signOut(mGoogleApiClient);
+//                if (mGoogleApiClient.isConnected()) {
+//                    mGoogleApiClient.disconnect();
+//                }
+//                setViewVisibility();
+//                break;
         }
     }
 
@@ -1094,9 +1107,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void getLatestMoviePosters(){
-        //TmdbMovies movies = new TmdbApi("36073b90b4180c75881e92624e72ec3c").getMovies();
-       // MovieDb movie = movies.getMovie(5353, "en");
+        ProgressDialog progress = new ProgressDialog(MainActivity.this);
+        new TmdbQuerySearch("", (SliderLayout) findViewById(R.id.slider), (PagerIndicator) findViewById(R.id.custom_indicator), getApplicationContext(), progress);
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            logout();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+   public void logout(){
+       mSignInClicked = false;
+       Games.signOut(mGoogleApiClient);
+       if (mGoogleApiClient.isConnected()) {
+           mGoogleApiClient.disconnect();
+       }
+       setViewVisibility();
+   }
+
 
 }
 

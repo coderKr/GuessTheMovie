@@ -3,14 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/background"
-        android:background="@color/colorBkgd2"
-        android:alpha=".75"
-       />
-
     <LinearLayout
         android:id="@+id/login_layout"
         android:layout_width="wrap_content"
@@ -41,82 +33,6 @@
             style="@style/Button1">
         </com.google.android.gms.common.SignInButton>
     </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/matchup_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:orientation="vertical"
-        android:visibility="visible"
-        tools:context=".SkeletonActivity" >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="250dp"
-            android:id="@+id/slideshow"
-            android:orientation="vertical"
-            android:theme="@style/StyledIndicators">
-            <android.support.v4.view.ViewPager
-                android:id="@+id/pager"
-                android:layout_width="fill_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"/>
-
-            <com.viewpagerindicator.CirclePageIndicator
-                android:id="@+id/indicator"
-                android:layout_width="fill_parent"
-                android:layout_height="5dp" />
-        </LinearLayout>
-
-            <TextView
-                android:id="@+id/name_field"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_margin="@dimen/margin_small"
-                android:textSize="17dp"
-                android:text="" />
-
-            <Button
-                android:id="@+id/sign_out_button"
-                android:layout_width="160dp"
-                android:layout_height="100dp"
-                android:layout_marginBottom="30dp"
-                android:text="@string/sign_out"
-                android:layout_below="@+id/slideshow"
-                style="@style/Button1"/>
-
-            <Button
-                android:id="@+id/startMatchButton"
-                android:layout_width="160dp"
-                android:layout_height="100dp"
-                android:onClick="onStartMatchClicked"
-                android:text="@string/start_match"
-                android:layout_toRightOf="@+id/sign_out_button"
-                android:layout_below="@+id/slideshow"
-                style="@style/Button1"/>
-
-            <Button
-                android:id="@+id/checkGamesButton"
-                android:layout_width="160dp"
-                android:layout_height="100dp"
-                android:onClick="onCheckGamesClicked"
-                android:text="@string/check_games"
-                android:layout_below="@+id/sign_out_button"
-                style="@style/Button1"/>
-
-        <Button
-            android:id="@+id/showLeadershipBoard"
-            android:layout_width="160dp"
-            android:layout_height="100dp"
-            android:onClick="onShowLeaderboardsRequested"
-            android:text="Scores"
-            style="@style/Button1"
-            android:layout_below="@+id/sign_out_button"
-            android:layout_toRightOf="@id/checkGamesButton"/>
-
-    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/progressLayout"
