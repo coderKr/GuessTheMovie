@@ -58,7 +58,8 @@ import java.util.HashMap;
 
     public class TmdbQuerySearch extends AsyncTask implements BaseSliderView.OnSliderClickListener {
 
-        private final String TMDB_API_KEY = "36073b90b4180c75881e92624e72ec3c";
+        private final String TMDB_API_KEY = "36073b90b4180c75881e92624e72ec3c"; //tmdb
+        //private final String TMDB_API_KEY = "B2B269D887D32D7E0E0643E007545328"; //cinmealytics
         private static final String DEBUG_TAG = "TMDBQueryManager";
         private String IMG_BASE_URL = "";
         private String IMG_SIZE = "";
@@ -166,6 +167,7 @@ import java.util.HashMap;
                     return parseConfigResult(result);
                 case "Movies":
                     stringBuilder.append(BASE_URL + "movie/upcoming" + "?api_key=" + TMDB_API_KEY);
+                    //stringBuilder.append("https://api.cinemalytics.com/v1/movie/upcoming?auth_token=" + TMDB_API_KEY);
                     url = new URL(stringBuilder.toString());
                     result = HTTPConnection(url);
                     return parseMovieResult(result);

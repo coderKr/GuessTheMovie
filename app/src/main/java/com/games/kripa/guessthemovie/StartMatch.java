@@ -5,7 +5,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -15,6 +19,12 @@ import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.TextView;
+
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.games.Games;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,11 +51,19 @@ public class StartMatch extends AppCompatActivity implements
     String mUrl = "http://www.omdbapi.com/";
     public DelayAutoCompleteTextView movieTitle = null;
     String movie;
+    Toolbar mToolbar;
+    GoogleApiClient mGoogleApiClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_match);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setLogo(R.drawable.filmymastitoolbar);
+        getSupportActionBar().setIcon(R.drawable.filmymastitoolbar);
         View x = findViewById(R.id.start_match);
         send = (Button) x.findViewById(R.id.button_send);
         send.setOnClickListener(this);
@@ -53,30 +71,12 @@ public class StartMatch extends AppCompatActivity implements
         check.setOnClickListener(this);
 
         intent = getIntent();
+        mGoogleApiClient = (GoogleApiClient) intent.getSerializableExtra("mGoogleApiClient");
         movieTitle = (DelayAutoCompleteTextView) findViewById(R.id.MovieSuggestionList);
         movieTitle.setThreshold(2);
         movieTitle.setAdapter(new MovieSuggestionAdapter(this)); // 'this' is Activity instance
         movieTitle.setLoadingIndicator(
                 (android.widget.ProgressBar) findViewById(R.id.pb_loading_indicator));
-       /* movieTitle.setOnKeyListener(new View.OnKeyListener()
-        {
-            public boolean onKey(View v, int keyCode, KeyEvent event)
-            {
-                if (event.getAction() == KeyEvent.ACTION_DOWN)
-                {
-                    switch (keyCode)
-                    {
-                        case KeyEvent.KEYCODE_DPAD_CENTER:
-                        case KeyEvent.KEYCODE_ENTER:
-                            onClick(findViewById(android.R.id.content).getRootView());
-                            return true;
-                        default:
-                            break;
-                    }
-                }
-                return false;
-            }
-        });*/
 
         movieTitle.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -88,6 +88,35 @@ public class StartMatch extends AppCompatActivity implements
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_logout) {
+            logout();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    public void logout(){
+        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                new ResultCallback<Status>() {
+                    @Override
+                    public void onResult(Status status) {
+                        // ...
+                    }
+                });
+        Games.signOut(mGoogleApiClient);
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -95,7 +124,6 @@ public class StartMatch extends AppCompatActivity implements
         findViewById(R.id.error_msg).setVisibility(View.GONE);
         send.setVisibility(View.GONE);
 
-        //movie = movieText.getText().toString();
         movie = movieTitle.getText().toString();
 
         try {
@@ -230,6 +258,8 @@ class MovieSuggestionAdapter extends BaseAdapter implements Filterable {
             }};
         return filter;
     }
+
+
 
     private List<String> findMovies(Context context, String movieTitle) throws UnsupportedEncodingException, ExecutionException, InterruptedException {
         String mUrl = "http://www.omdbapi.com/";

@@ -34,7 +34,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +58,7 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
 import com.google.android.gms.plus.Plus;
 import com.viewpagerindicator.CirclePageIndicator;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity
                 posterUrl = data.getStringExtra("Poster");
                 movieid = data.getStringExtra("MovieId");
                 language = data.getStringExtra("Language");
-                startMatch(movieName, movieid, language);
+                startMatch(movieName, movieid, language, mGoogleApiClient);
             }else{
 
             }
@@ -661,14 +661,14 @@ public class MainActivity extends AppCompatActivity
 
         mMatch = mStartTurnBasedMatch;
 
-        String playerId = Games.Players.getCurrentPlayerId(mGoogleApiClient);
+        String playerId = Games.Players.getCurrentPlayerId(this.mGoogleApiClient);
         String nextParticipantId = getNextParticipantId();
 
 
         showSpinner();
 
 
-        Games.TurnBasedMultiplayer.takeTurn(mGoogleApiClient, mStartTurnBasedMatch.getMatchId(),
+        Games.TurnBasedMultiplayer.takeTurn(this.mGoogleApiClient, mStartTurnBasedMatch.getMatchId(),
                 mTurnData.persist(), nextParticipantId).setResultCallback(
                 new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                     @Override
@@ -815,6 +815,7 @@ public class MainActivity extends AppCompatActivity
 
         mStartTurnBasedMatch = match;
         Intent intent = new Intent(this, StartMatch.class);
+        intent.putExtra("mGoogleApiClient", (Serializable) mGoogleApiClient);
         startActivityForResult(intent, RC_START_MATCH);
 
     }
@@ -1117,24 +1118,6 @@ public class MainActivity extends AppCompatActivity
         inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_logout) {
-            logout();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-   public void logout(){
-       mSignInClicked = false;
-       Games.signOut(mGoogleApiClient);
-       if (mGoogleApiClient.isConnected()) {
-           mGoogleApiClient.disconnect();
-       }
-       setViewVisibility();
-   }
 
 
 }
