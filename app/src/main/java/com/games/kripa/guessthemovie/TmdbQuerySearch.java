@@ -27,35 +27,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-//public class TmdbQuerySearch {
-//    ViewPager viewPager;
-//    PagerAdapter pageAdapter;
-//    String EXTRA_QUERY = "Query";
-//    CirclePageIndicator mIndicator;
-//    int [] moviePosters;
-//    private ProgressDialog progressDialog;
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_tmdbquerysearch);
-//        progressDialog = new ProgressDialog(TmdbQuerySearch.this);
-//        Intent intent = getIntent();
-//        String query = intent.getStringExtra(EXTRA_QUERY);
-//
-//        // Check if the NetworkConnection is active and connected.
-//        ConnectivityManager connMgr = (ConnectivityManager)
-//                getSystemService(Context.CONNECTIVITY_SERVICE);
-//        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-//        if (networkInfo != null && networkInfo.isConnected()) {
-//            new TMDBQueryManager().execute(query);
-//        } else {
-//            TextView textView = new TextView(this);
-//            textView.setText("No network connection.");
-//            setContentView(textView);
-//        }
-//    }
-
     public class TmdbQuerySearch extends AsyncTask implements BaseSliderView.OnSliderClickListener {
 
         private final String TMDB_API_KEY = "36073b90b4180c75881e92624e72ec3c"; //tmdb
@@ -68,6 +39,8 @@ import java.util.HashMap;
         private PagerIndicator pager;
         private ProgressDialog progressDialog;
         private Context appContext;
+        private ArrayList<MovieResult> moviesForFilter;
+        private int responseCode = 0;
 
         public TmdbQuerySearch(String query, SliderLayout slider, PagerIndicator pager, Context appContext, ProgressDialog progress) {
             this.query = query;
@@ -78,15 +51,14 @@ import java.util.HashMap;
             execute(query);
         }
 
-
         @Override
         protected void onPreExecute(){
             super.onPreExecute();
-            progressDialog.setMessage("Downloading Images");
-            progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-            progressDialog.show();
-
-
+            if(progressDialog != null){
+                progressDialog.setMessage("Downloading Images");
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+                progressDialog.show();
+            }
         }
 
         private void getConfigDetailsFromTmdb() {
@@ -101,12 +73,16 @@ import java.util.HashMap;
             }
         }
 
-            @Override
+        @Override
         protected ArrayList<MovieResult> doInBackground(Object... params) {
             ArrayList<MovieResult> movies = new ArrayList<MovieResult>();
             try {
                 getConfigDetailsFromTmdb();
-                movies = (ArrayList<MovieResult>)searchIMDB("Movies", (String) params[0]);
+                if(((String)params[0]).isEmpty()) {
+                    movies = (ArrayList<MovieResult>) searchIMDB("LatestMovies", (String) params[0]);
+                } else {
+                    movies = (ArrayList<MovieResult>)searchIMDB("ValidateMovie", (String) params[0]);
+                }
                 return movies;
             } catch (IOException e) {
                 return null;
@@ -122,30 +98,31 @@ import java.util.HashMap;
 
         @Override
         protected void onPostExecute(Object result) {
-            progressDialog.dismiss();
-            SliderLayout sliderShow = slider;
-            HashMap<String,String> url_maps = new HashMap<String, String>();
-            for(MovieResult movie: (ArrayList<MovieResult>)result){
-                url_maps.put(movie.getTitle(), movie.getPosterPath());
-                TextSliderView textSliderView = new TextSliderView(appContext);
-                // initialize a SliderLayout
-                textSliderView
-                        .description(movie.getTitle())
-                        .image(IMG_BASE_URL + IMG_SIZE + movie.getPosterPath())
-                        .setScaleType(BaseSliderView.ScaleType.Fit)
-                        .setOnSliderClickListener(this);
-                sliderShow.addSlider(textSliderView);
+            if(!query.isEmpty()){
+                MovieSuggestionAdapter obj = new MovieSuggestionAdapter(this.appContext);
+                moviesForFilter = (ArrayList<MovieResult>) result;
+                //obj.processFinish(moviesForFilter);
+            } else {
+                progressDialog.dismiss();
+                SliderLayout sliderShow = slider;
+                HashMap<String, String> url_maps = new HashMap<String, String>();
+                for (MovieResult movie : (ArrayList<MovieResult>) result) {
+                    if(movie.getLanguage().equals("hi")) {
+                        url_maps.put(movie.getTitle(), movie.getPosterPath());
+                        TextSliderView textSliderView = new TextSliderView(appContext);
+                        // initialize a SliderLayout
+                        textSliderView
+                                .description(movie.getTitle())
+                                .image(IMG_BASE_URL + IMG_SIZE + movie.getPosterPath())
+                                .setScaleType(BaseSliderView.ScaleType.Fit)
+                                .setOnSliderClickListener(this);
+                        sliderShow.addSlider(textSliderView);
+                    }
+                }
+                sliderShow.setCustomIndicator((PagerIndicator) pager);
+                sliderShow.setCustomAnimation(new DescriptionAnimation());
+                sliderShow.setDuration(4000);
             }
-            sliderShow.setCustomIndicator((PagerIndicator) pager);
-            sliderShow.setCustomAnimation(new DescriptionAnimation());
-            sliderShow.setDuration(4000);
-
-//            moviePosters = new int[] {R.drawable.poster1, R.drawable.poster2, R.drawable.poster3};
-//            viewPager = (ViewPager) findViewById(R.id.pager);
-//            pageAdapter = new ViewPagerAdapter(TmdbQuerySearch.this, moviePosters);
-//            viewPager.setAdapter(pageAdapter);
-//            mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-//            mIndicator.setViewPager(viewPager);
         };
 
         /**
@@ -165,9 +142,14 @@ import java.util.HashMap;
                     url = new URL(stringBuilder.toString());
                     result = HTTPConnection(url);
                     return parseConfigResult(result);
-                case "Movies":
-                    stringBuilder.append(BASE_URL + "movie/upcoming" + "?api_key=" + TMDB_API_KEY);
+                case "LatestMovies":
+                    stringBuilder.append(BASE_URL + "movie/upcoming" + "?api_key=" + TMDB_API_KEY + "&region=IN");
                     //stringBuilder.append("https://api.cinemalytics.com/v1/movie/upcoming?auth_token=" + TMDB_API_KEY);
+                    url = new URL(stringBuilder.toString());
+                    result = HTTPConnection(url);
+                    return parseMovieResult(result);
+                case "ValidateMovie":
+                    stringBuilder.append(BASE_URL + "search/movie" + "?api_key=" + TMDB_API_KEY + "&region=IN&query=" + query);
                     url = new URL(stringBuilder.toString());
                     result = HTTPConnection(url);
                     return parseMovieResult(result);
@@ -214,7 +196,10 @@ import java.util.HashMap;
                             jsonMovieObject.getString("title"))
                             .setBackdropPath(jsonMovieObject.getString("backdrop_path"))
                             .setOriginalTitle(jsonMovieObject.getString("original_title"))
-                            .setPosterPath(jsonMovieObject.getString("poster_path"));
+                            .setPosterPath(jsonMovieObject.getString("poster_path"))
+                            .setDescription(jsonMovieObject.getString("overview"))
+                            .setLanguage(jsonMovieObject.getString("original_language"))
+                            .setReleaseDate(jsonMovieObject.getString("release_date"));
                     results.add(movieBuilder.build());
                 }
             } catch (JSONException e) {
@@ -259,5 +244,9 @@ import java.util.HashMap;
         public void onSliderClick(BaseSliderView slider) {
 
         }
+        public ArrayList<MovieResult> getMoviesForFilter(){
+            return moviesForFilter;
+        }
     }
+
 

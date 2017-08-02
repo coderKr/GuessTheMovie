@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -23,25 +24,35 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
     private List<String> guessedLetters = new ArrayList<String>();
     private int chancesLeft = 0;
     private String actualMovie;
+    private String status = "LOST";
     private String displayMovie;
-    String MovieId, language;
+    String language;
+    String showVowels = "true";
+    String hint = "";
     boolean win,lost;
     private int uniqueChar =0;
     public Intent returnIntent;
+    Toolbar mToolbar;
     List<String> wrongGuesses = new ArrayList<String>(Arrays.asList("B","O","L","L1","Y","W","O","O","D"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_logic);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
 
         Intent intent = getIntent();
         actualMovie = (intent.getStringExtra("Movie")).toUpperCase();
-        MovieId = intent.getStringExtra("MovieId");
         language = intent.getStringExtra("Language");
-        if(language.equals("English")){
-            ((TextView) findViewById(R.id.B)).setText("H");
+        if(language.equals("en")){
+            ChancesLeft setByLang = (ChancesLeft) findViewById(R.id.ChanceB);
+            setByLang.setText("H");
         }
+        showVowels = intent.getStringExtra("ShowVowels");
+        hint = intent.getStringExtra("Hint");
+        ((TextView)findViewById(R.id.hint)).setText("Hint :" + hint);
         displayMovie = actualMovie;
         displayMovie = getBlanks(displayMovie);
         TextView t = (TextView) findViewById(R.id.display);
@@ -79,7 +90,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             cb.setTextColor(Color.parseColor("white"));
             cb.setTextSize(25);
             cb.setOnClickListener(this);
-            cb.setBackgroundColor(Color.parseColor("#D9411E"));
+            cb.setBackgroundColor(Color.parseColor("#FF9900"));
             if (guessedLetters.contains("" + buttonChar)) {
                 cb.setBackgroundColor(Color.parseColor("#858585"));
                 cb.setOnClickListener(null);
@@ -107,7 +118,8 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             if(guessedLetters.size() == uniqueChar){
                 win = true;
                 Toast.makeText(GameLogic.this, "Won the Match!", Toast.LENGTH_SHORT).show();
-                returnIntent.putExtra("Status", "WON");
+                status = "WON";
+                returnIntent.putExtra("Status", status);
                 returnIntent.putExtra("Movie", actualMovie);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
@@ -123,7 +135,8 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             else {
                 lost = true;
                 Toast.makeText(GameLogic.this, "Lost the Match!", Toast.LENGTH_SHORT).show();
-                returnIntent.putExtra("Status", "LOST");
+                status = "LOST";
+                returnIntent.putExtra("Status", status);
                 returnIntent.putExtra("Movie", actualMovie);
                 setResult(Activity.RESULT_OK, returnIntent);
                 finish();
@@ -146,7 +159,10 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
 
     public String getBlanks(String movie){
         String tempStr="";
-        String vowels = "AEIOU";
+        String vowels = "";
+        if (showVowels.equals("true")) {
+            vowels = "AEIOU";
+        }
         for(int i=0;i<movie.length();i++){
             if (!guessedLetters.contains("" + movie.charAt(i))) {
                 if(movie.charAt(i) == ' '){

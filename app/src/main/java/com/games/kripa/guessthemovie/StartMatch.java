@@ -7,9 +7,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -18,20 +15,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.RadioButton;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.google.android.gms.auth.api.Auth;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.games.Games;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -41,37 +29,33 @@ public class StartMatch extends AppCompatActivity implements
         View.OnClickListener {
 
     EditText movieText ;
-    Button validate;
+    Button validateBtn;
+    Button sendBtn;
     private Intent intent;
-    Button send;
-    String result="";
+    String title="";
     String posterUrl="";
-    String movieId="";
     String language="";
-    String mUrl = "http://www.omdbapi.com/";
+    String releaseDate="";
     public DelayAutoCompleteTextView movieTitle = null;
     String movie;
     Toolbar mToolbar;
-    GoogleApiClient mGoogleApiClient;
+    RelativeLayout postValidation;
+    Boolean showVowels = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_match);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbarstartmatch);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.filmymastitoolbar);
-        getSupportActionBar().setIcon(R.drawable.filmymastitoolbar);
-        View x = findViewById(R.id.start_match);
-        send = (Button) x.findViewById(R.id.button_send);
-        send.setOnClickListener(this);
-        Button check = (Button) x.findViewById(R.id.button_check);
-        check.setOnClickListener(this);
-
+        View sendMovieLayout = findViewById(R.id.start_match);
+        sendBtn = (Button) sendMovieLayout.findViewById(R.id.button_send);
+        sendBtn.setOnClickListener(this);
+        validateBtn = (Button) sendMovieLayout.findViewById(R.id.button_check);
+        validateBtn.setOnClickListener(this);
+        postValidation = findViewById(R.id.postValidate);
         intent = getIntent();
-        mGoogleApiClient = (GoogleApiClient) intent.getSerializableExtra("mGoogleApiClient");
         movieTitle = (DelayAutoCompleteTextView) findViewById(R.id.MovieSuggestionList);
         movieTitle.setThreshold(2);
         movieTitle.setAdapter(new MovieSuggestionAdapter(this)); // 'this' is Activity instance
@@ -89,99 +73,61 @@ public class StartMatch extends AppCompatActivity implements
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.action_logout) {
-            logout();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    public void logout(){
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // ...
-                    }
-                });
-        Games.signOut(mGoogleApiClient);
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-
-    @Override
     public void onClick(View v) {
-        findViewById(R.id.selected_movie).setVisibility(View.GONE);
-        findViewById(R.id.error_msg).setVisibility(View.GONE);
-        send.setVisibility(View.GONE);
-
         movie = movieTitle.getText().toString();
-
         try {
-            String url = mUrl + "?t=" + URLEncoder.encode(movie, "UTF-8");
-
             switch (v.getId()) {
-            case R.id.button_check:
-                result = new validateMovie().execute(url).get();
-                if(result!=null && result.length() > 0) {
+                case R.id.button_check:
+                    findViewById(R.id.error_msg).setVisibility(v.GONE);
+                    postValidation.setVisibility(v.GONE);
+                    ArrayList<MovieResult> movies = new ArrayList<MovieResult>();
+                    movies = (ArrayList<MovieResult>) new TmdbQuerySearch(movie, null, null,StartMatch.this,null).get();
+                    if(movies!=null && !movies.isEmpty() && movies.size() > 0) {
+                        title = movies.get(0).getTitle();
+                        title = title.replaceAll("[-+.^:,]","");
+                        posterUrl = movies.get(0).getBackdropPath();
+                        language = movies.get(0).getLanguage();
+                        releaseDate = movies.get(0).getReleaseDate();
+                        TextView selectedMovieTitle =  findViewById(R.id.selected_movie_title);
+                        selectedMovieTitle.setText(title);
+                        TextView selectedMovieDesc = findViewById(R.id.selected_movie_description);
+                        selectedMovieDesc.setText(movies.get(0).getDescription());
+                        TextView selectedMovieLang = findViewById(R.id.selected_movie_language);
+                        selectedMovieLang.setText(language);
+                        TextView selectedMovieReleaseDate = findViewById(R.id.selected_movie_release_date);
+                        selectedMovieReleaseDate.setText(releaseDate);
+                        movieTitle.setText("");
+                        postValidation.setVisibility(v.VISIBLE);
+                    } else{
+                        findViewById(R.id.error_msg).setVisibility(v.VISIBLE);
+                    }
 
-                    JSONObject first = new JSONObject(result);
-
-                    result = (String) first.getString("Title");
-                    result = result.replaceAll("[-+.^:,]","");
-                    posterUrl = (String)first.getString("Poster");
-                    movieId = (String) first.getString("imdbID");
-                    language = (String)first.getString("Language");
-
-
-                   // if(language.equals("Hindi") || language.equals("English")) {
-                        TextView selectedMovie = (TextView) findViewById(R.id.selected_movie);
-                        selectedMovie.setText("The movie you have selected is " + result);
-                        findViewById(R.id.selected_movie).setVisibility(View.VISIBLE);
-                        send.setVisibility(View.VISIBLE);
-                   // }else{
-                   //     findViewById(R.id.error_msg).setVisibility(View.VISIBLE);
-                   // }
-
-                } else{
-                    findViewById(R.id.error_msg).setVisibility(View.VISIBLE);
-                }
-
-                break;
-            case R.id.button_send:
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("MovieName",result);
-                returnIntent.putExtra("Poster",posterUrl);
-                returnIntent.putExtra("MovieId", movieId);
-                returnIntent.putExtra("Language", language);
-                setResult(Activity.RESULT_OK, returnIntent);
-                finish();
-                break;
+                    break;
+                case R.id.button_send:
+                    Intent returnIntent = new Intent();
+                    returnIntent.putExtra("MovieName",title);
+                    returnIntent.putExtra("Poster",posterUrl);
+                    returnIntent.putExtra("Language", language);
+                    returnIntent.putExtra("ReleaseDate", releaseDate);
+                    returnIntent.putExtra("ShowVowels", showVowels);
+                    returnIntent.putExtra("Hint", ((EditText)findViewById(R.id.enterHint)).getText().toString());
+                    setResult(Activity.RESULT_OK, returnIntent);
+                    finish();
+                    break;
+                case R.id.showVowel:
+                    ((RadioButton) v).setChecked(!showVowels);
+                    showVowels = ((RadioButton) v).isChecked();
+                    break;
+                default:
+                    break;
         }
-
         } catch (InterruptedException e) {
             e.printStackTrace();
-            findViewById(R.id.error_msg).setVisibility(View.VISIBLE);
+            findViewById(R.id.error_msg).setVisibility(v.VISIBLE);
         } catch (ExecutionException e) {
             e.printStackTrace();
-            findViewById(R.id.error_msg).setVisibility(View.VISIBLE);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            findViewById(R.id.error_msg).setVisibility(View.VISIBLE);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-            findViewById(R.id.error_msg).setVisibility(View.VISIBLE);
+            findViewById(R.id.error_msg).setVisibility(v.VISIBLE);
         }
-
     }
 }
 
@@ -190,6 +136,7 @@ class MovieSuggestionAdapter extends BaseAdapter implements Filterable {
     private static final int MAX_RESULTS = 10;
     private Context mContext;
     private List<String> resultList = new ArrayList<String>();
+
 
     public MovieSuggestionAdapter(Context context) {
         mContext = context;
@@ -218,7 +165,6 @@ class MovieSuggestionAdapter extends BaseAdapter implements Filterable {
             convertView = inflater.inflate(R.layout.simple_dropdown_item_1line, parent, false);
         }
         ((TextView) convertView.findViewById(R.id.text1)).setText(getItem(position));
-       // ((TextView) convertView..setText(getItem(position));
         return convertView;
     }
 
@@ -259,28 +205,16 @@ class MovieSuggestionAdapter extends BaseAdapter implements Filterable {
         return filter;
     }
 
-
-
     private List<String> findMovies(Context context, String movieTitle) throws UnsupportedEncodingException, ExecutionException, InterruptedException {
-        String mUrl = "http://www.omdbapi.com/";
-        String url = mUrl + "?s=" + URLEncoder.encode(movieTitle, "UTF-8");
+        ArrayList<MovieResult> movies = new ArrayList<MovieResult>();
         List<String> suggestedMovies = new ArrayList<String>();
-        String result = new validateMovie().execute(url).get();
-        if (result != null && result.length() > 0) {
-            try {
-                JSONObject jsonObj = new JSONObject(result);
-
-                // Getting JSON Array node
-                JSONArray moviesList = jsonObj.getJSONArray("Search");
-
-                // looping through All Contacts
-                for (int i = 0; i < moviesList.length(); i++) {
-                    JSONObject c = moviesList.getJSONObject(i);
-                    String name = c.getString("Title");
+        if(!movieTitle.isEmpty()) {
+            movies = (ArrayList<MovieResult>) new TmdbQuerySearch(movieTitle, null, null, context, null).get();
+            for (MovieResult movie : (ArrayList<MovieResult>) movies) {
+                String name = movie.getTitle();
+                if(movie.getLanguage().equals("hi") || movie.getLanguage().equals("en")) {
                     suggestedMovies.add(name);
                 }
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
         }
         return suggestedMovies;

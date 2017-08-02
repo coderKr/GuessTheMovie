@@ -79,7 +79,7 @@ public class  ChancesLeft extends View {
 
         mStrikePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mStrikePaint.setColor(mStrikeColor);
-        mStrikePaint.setStrokeWidth(5);
+        mStrikePaint.setStrokeWidth(15);
         setWillNotDraw(false);
 
     }
@@ -118,6 +118,11 @@ public class  ChancesLeft extends View {
         mTextHeight = textHeight;
         invalidate();
     }
+
+    public void setText(String text) {
+        mLabelText = text;
+    }
+
 
     public boolean getShowTextStrike () {
         return mShowLabelTextStrike;

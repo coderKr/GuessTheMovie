@@ -19,7 +19,7 @@
     <string name="leave">Leave</string>
     <string name="cancel">Cancel</string>
     <string name="finish">Finish</string>
-    <string name="welcome_to_our_skeleton_app_">Welcome to GuessMovie! :)</string>
+    <string name="welcome_to_our_skeleton_app_">Welcome to Filmy Masti! :)</string>
     <string name="check_games">Check games</string>
     <string name="start_match">New Match</string>
     <string name="turn_counter">Turn counter</string>
@@ -39,7 +39,7 @@
     <string name="won">You have won the match!! The movie is: </string>
     <string name="lost">You have lost the match!! The movie is: </string>
     <string name="invalid_movie">Invalid movie entered. Try again!</string>
-    <string name="selected_movie">The movie you have selected is </string>
+    <string name="selected_movie">The movie you have selected is : </string>
     <string name="titlebar">Bollywood Masti!!</string>
     <string name="leadershipId">CgkIp8vn4LUBEAIQAg</string>
     <string name="leaderboards_not_available" />
@@ -47,6 +47,11 @@
     <string name="search_hint">Search Movies</string>
     <string name="search_settings">Search Movies</string>
     <string name="title_activity_main3">Main3Activity</string>
-
+    <string name="selected_movie_title">Movie Title :</string>
+    <string name="selected_movie_language">Language :</string>
+    <string name="selected_movie_release_date">Release Date :</string>
+    <string name="selected_movie_description">Description :</string>
+    <string name="showVowel">Make vowels visible for opponents</string>
+    <string name="hint">Optional: Give Hint to Opponent</string>
 
 </resources>

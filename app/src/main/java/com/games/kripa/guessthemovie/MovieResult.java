@@ -10,6 +10,9 @@ public class MovieResult {
     private final String backdropPath;
     private final int id;
     private final String posterPath;
+    private final String language;
+    private final String description;
+    private final String releaseDate;
 
     private MovieResult(Builder builder){
         backdropPath = builder.backdropPath;
@@ -17,6 +20,9 @@ public class MovieResult {
         id = builder.id;
         posterPath = builder.posterPath;
         title = builder.title;
+        language = builder.language;
+        description = builder.description;
+        releaseDate = builder.releaseDate;
     }
 
     public static class Builder {
@@ -25,10 +31,28 @@ public class MovieResult {
         private String backdropPath;
         private int id;
         private String posterPath;
+        private String language;
+        private String description;
+        private String releaseDate;
 
         public Builder(int id, String title) {
             this.id = id;
             this.title = title;
+        }
+
+        public Builder setLanguage(String language){
+            this.language = language;
+            return this;
+        }
+
+        public Builder setDescription(String desc){
+            this.description = desc;
+            return this;
+        }
+
+        public Builder setReleaseDate(String date){
+            this.releaseDate = date;
+            return this;
         }
 
         public Builder setBackdropPath(String backdropPath) {
@@ -93,4 +117,10 @@ public class MovieResult {
     public String toString() {
         return getTitle();
     }
+
+    public String getLanguage(){ return language; }
+
+    public String getDescription() { return description;}
+
+    public String getReleaseDate() { return releaseDate;}
 }

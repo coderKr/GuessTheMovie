@@ -48,29 +48,121 @@
         android:visibility="gone"
         android:text="@string/invalid_movie"
         android:layout_marginTop="200dp"
+        android:layout_below="@+id/button_check"
         android:textSize="17dp"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/postValidate"
+        android:visibility="gone"
+        android:layout_below="@+id/button_check">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/selected_movie"
-        android:visibility="gone"
+        android:id="@+id/selected_movie_text"
         android:text="@string/selected_movie"
-        android:layout_marginTop="200dp"
         android:textSize="17dp"
         android:layout_centerHorizontal="true"
         android:textColor="@color/white"/>
-
-    <Button android:id="@+id/button_send"
+            <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_below="@+id/selected_movie_text"
+                         android:id="@+id/selected_movie"
+                         android:textColor="@color/white"
+                         android:paddingTop="10dp"
+                         android:stretchColumns="*">
+                <TableRow>
+                    <TextView
+                        android:text="@string/selected_movie_title"
+                        android:textColor="@color/colorPrimary"
+                        android:padding="3dip" />
+                    <TextView
+                        android:text="@string/selected_movie_title"
+                        android:id="@+id/selected_movie_title"
+                        android:textColor="@color/white"
+                        android:padding="3dip" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:text="@string/selected_movie_description"
+                        android:textColor="@color/colorPrimary"
+                        android:padding="3dip" />
+                    <TextView
+                        android:text="@string/selected_movie_description"
+                        android:id="@+id/selected_movie_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:layout_weight="1"
+                        android:padding="1dip"
+                        android:ellipsize="end"
+                        android:maxLines="3"/>
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:text="@string/selected_movie_release_date"
+                        android:textColor="@color/colorPrimary"
+                        android:padding="3dip" />
+                    <TextView
+                        android:text="@string/selected_movie_release_date"
+                        android:id="@+id/selected_movie_release_date"
+                        android:textColor="@color/white"
+                        android:padding="3dip" />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:text="@string/selected_movie_language"
+                        android:textColor="@color/colorPrimary"
+                        android:padding="3dip" />
+                    <TextView
+                        android:text="@string/selected_movie_title"
+                        android:id="@+id/selected_movie_language"
+                        android:textColor="@color/white"
+                        android:padding="3dip" />
+                </TableRow>
+            </TableLayout>
+            <RadioButton android:id="@+id/showVowel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/white"
+                        android:shadowColor="@color/colorPrimary"
+                        android:text="@string/showVowel"
+                        android:layout_below="@+id/selected_movie"
+                        android:buttonTint="@color/colorPrimary"
+                        android:onClick="onClick"/>
+            <TextView android:text="@string/hint"
+                        android:id="@+id/hint"
+                        android:textColor="@color/colorPrimary"
+                        android:layout_below="@+id/showVowel"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:padding="3dip" />
+            <EditText android:id="@+id/enterHint"
+                    android:textColor="@color/white"
+                    android:layout_weight="2"
+                    android:layout_width="250dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/hint"
+                    android:textAlignment="center"
+                    android:backgroundTint="@color/colorPrimary"
+                    style="@style/EditTextTheme"
+                    android:lines="1"
+                    android:layout_centerHorizontal="true" />
+        <Button android:id="@+id/button_send"
         android:layout_width="80dp"
         android:layout_height="30dp"
+        android:layout_below="@+id/enterHint"
         android:text="Send"
         style="@style/Button1"
-        android:visibility="gone"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true" />
+            </RelativeLayout>
 
     <FrameLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -88,6 +180,8 @@
             android:textColor="@color/white"
             android:paddingRight="1px"
             android:layout_centerHorizontal="true"
+            style="@style/EditTextTheme"
+            android:backgroundTint="@color/colorPrimary"
             android:imeOptions="flagNoExtractUi|actionSearch"/>
 
         <ProgressBar

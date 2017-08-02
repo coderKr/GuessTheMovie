@@ -15,6 +15,16 @@
     tools:showIn="@layout/activity_game_logic"
     android:background="@color/colorBkgd">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/hint"
+        android:textSize="25dp"
+        android:text="Hint: None"
+        android:visibility="visible"
+        android:layout_marginTop="260dp"
+        android:textColor="@color/white"/>
+
     <GridView
         android:id="@+id/grid"
         android:layout_width="wrap_content"
@@ -33,29 +43,30 @@
     <TextView
         android:textSize="30dp"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="120dp"
         android:id="@+id/display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MOVIE NAME"
-        android:textColor="@color/colorButton3"/>
+        android:textColor="@color/colorPrimary"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
+        android:id="@+id/chancesleft"
         android:layout_marginStart="0dp">
          <com.games.kripa.guessthemovie.ChancesLeft
              custom:showLabelTextStrike="true"
              custom:labelWidth = "30dp"
              custom:labelHeight = "40dp"
              custom:labelColor = "@color/white"
-             custom:strikeColor = "@color/colorButton3"
+             custom:strikeColor = "@color/colorPrimary"
              custom:labelText = "B"
              custom:labelTextX = "5dp"
-             android:layout_width="40dp"
-             android:layout_height="50dp"
+             android:layout_width="36.5dp"
+             android:layout_height="50.5dp"
              android:id = "@+id/ChanceB"
              >
          </com.games.kripa.guessthemovie.ChancesLeft>
@@ -64,11 +75,11 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "O"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
             android:id = "@+id/ChanceO1"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
@@ -77,11 +88,11 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "L"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
             android:id = "@+id/ChanceL1"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
@@ -90,11 +101,11 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "L"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
             android:id = "@+id/ChanceL2"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
@@ -103,24 +114,25 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "Y"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
             android:id = "@+id/ChanceY"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
         <com.games.kripa.guessthemovie.ChancesLeft
             custom:showLabelTextStrike="true"
-            custom:labelWidth = "30dp"
+            custom:labelWidth = "35dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "W"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
+            android:layout_marginRight="4dp"
             android:id = "@+id/ChanceW"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
@@ -129,11 +141,12 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "O"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="37dp"
+            android:layout_height="50.5dp"
+            android:layout_marginRight="2dp"
             android:id = "@+id/ChanceO2"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
@@ -142,11 +155,12 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "O"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
+            android:layout_marginRight="2dp"
             android:id = "@+id/ChanceO3"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
@@ -155,239 +169,14 @@
             custom:labelWidth = "30dp"
             custom:labelHeight = "40dp"
             custom:labelColor = "@color/white"
-            custom:strikeColor = "@color/colorButton3"
+            custom:strikeColor = "@color/colorPrimary"
             custom:labelText = "D"
             custom:labelTextX = "5dp"
-            android:layout_width="40dp"
-            android:layout_height="50dp"
+            android:layout_width="36.5dp"
+            android:layout_height="50.5dp"
             android:id = "@+id/ChanceD"
             >
         </com.games.kripa.guessthemovie.ChancesLeft>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="B"
-                android:id="@+id/BH"
-                android:layout_marginEnd="8dp"
-                android:height="50dp"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"/>
-            <ImageView
-                android:id="@+id/B"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough"
-                />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="O"
-            android:textSize="40dp"
-            android:height="50dp"
-            android:textColor="@color/white"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
-
-            <ImageView
-                android:id="@+id/O"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:text="L"
-            android:textSize="40dp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:textColor="@color/white"/>
-        <ImageView
-            android:id="@+id/L"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="gone"
-            android:background="@android:color/transparent"
-            android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:text="L"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"/>
-
-            <ImageView
-                android:id="@+id/L1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:text="Y"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"></TextView>
-
-            <ImageView
-                android:id="@+id/Y"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:text="W"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"></TextView>
-
-            <ImageView
-                android:id="@+id/W"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:text="O"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"></TextView>
-
-            <ImageView
-                android:id="@+id/O1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:text="O"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"></TextView>
-
-            <ImageView
-                android:id="@+id/O2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="8dp"
-                android:text="D"
-                android:textSize="40dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
-                android:textColor="@color/white"></TextView>
-
-            <ImageView
-                android:id="@+id/D"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="gone"
-                android:background="@android:color/transparent"
-                android:src="@drawable/strikethrough" />
-        </RelativeLayout>
-
-
     </LinearLayout>
-
 
 </RelativeLayout>

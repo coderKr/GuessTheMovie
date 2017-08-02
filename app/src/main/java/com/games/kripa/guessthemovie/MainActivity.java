@@ -34,6 +34,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -58,7 +59,6 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
 import com.google.android.gms.plus.Plus;
 import com.viewpagerindicator.CirclePageIndicator;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
 
@@ -115,7 +115,6 @@ public class MainActivity extends AppCompatActivity
     final static int RC_SELECT_PLAYERS = 10000;
     final static int RC_LOOK_AT_MATCHES = 10001;
     private static final int RC_START_MATCH = 1001;
-
     private static final int RC_GUESS_MOVIE = 2001;
     private static final int RC_MATCH_RESULT = 4001;
 
@@ -134,13 +133,15 @@ public class MainActivity extends AppCompatActivity
     // Do not retain references to match data once you have
     // taken an action on the match, such as takeTurn()
     ScoreDbHelper scores;
-    public GameTurn mTurnData;
+    GameTurn mTurnData;
     String movieName;
     String posterUrl ="";
     String movieid="";
+    String releaseDate="";
     String otherStatus="";
     String language="";
     String playerIdDb = "";
+    String hint = "";
     ViewPager viewPager;
     PagerAdapter pageAdapter;
     String EXTRA_QUERY = "Query";
@@ -152,39 +153,14 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        super.setContentView(R.layout.activity_main);
         scores = new ScoreDbHelper(getApplicationContext());
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setLogo(R.drawable.filmymastitoolbar);
-        getSupportActionBar().setIcon(R.drawable.filmymastitoolbar);
-
-
-        //
-        // scores.onCreate();
 
         //Get latest movie posters
         getLatestMoviePosters();
-//        moviePosters = new int[] {R.drawable.poster1, R.drawable.poster2, R.drawable.poster3};
-//        viewPager = (ViewPager) findViewById(R.id.pager);
-//        pageAdapter = new ViewPagerAdapter(MainActivity.this, moviePosters);
-//        viewPager.setAdapter(pageAdapter);
-//        mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-//        mIndicator.setViewPager(viewPager);
-        // Load the ImageView that will host the animation and
-        // set its background to our AnimationDrawable XML resource.
-//        ImageView img = (ImageView)findViewById(R.id.background);
-//        img.setBackgroundResource(R.drawable.changebackground);
-//        img.getBackground().setAlpha(60);
-//        img.setAlpha(60);
-
-        // Get the background, which has been compiled to an AnimationDrawable object.
-//        AnimationDrawable frameAnimation = (AnimationDrawable) img.getBackground();
-//
-//        // Start the animation (looped playback by default).
-//        frameAnimation.start();
 
         // Create the Google API Client with access to Plus and Games
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -196,10 +172,7 @@ public class MainActivity extends AppCompatActivity
                 .build();
 
         // Setup signin and signout buttons
-        //findViewById(R.id.sign_out_button).setOnClickListener(this);
         findViewById(R.id.sign_in_button).setOnClickListener(this);
-
-
 
     }
 
@@ -215,9 +188,9 @@ public class MainActivity extends AppCompatActivity
     protected void onStop() {
         super.onStop();
         Log.d(TAG, "onStop(): Disconnecting from Google APIs");
-        /*if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }*/
+//        if (mGoogleApiClient.isConnected()) {
+//            mGoogleApiClient.disconnect();
+//        }
     }
 
     @Override
@@ -375,7 +348,7 @@ public class MainActivity extends AppCompatActivity
             updateLeaderboards(false, playerIdDb);
             otherStatus = "WON";
         }
-        mTurnData.data = otherStatus+"--Next--"+movieName+"--Next--"+posterUrl+"--Next--"+movieid;
+        mTurnData.data = otherStatus+"--NEXT--"+movieName+"--NEXT--"+posterUrl+"--NEXT--"+releaseDate;
         Games.TurnBasedMultiplayer.finishMatch(mGoogleApiClient, mMatch.getMatchId(), mTurnData.persist())
                 .setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                     @Override
@@ -388,12 +361,12 @@ public class MainActivity extends AppCompatActivity
         setViewVisibility();
     }
 
-    public void endGame(String data, String movie, String posterUrl, String movieid){
+    public void endGame(String data, String movie, String posterUrl, String releaseDate){
         Intent intent = new Intent(this, GameResult.class);
         intent.putExtra("Status", data);
         intent.putExtra("Movie", movie);
         intent.putExtra("Poster",posterUrl);
-        intent.putExtra("MovieId", movieid);
+        intent.putExtra("ReleaseDate", releaseDate);
         startActivityForResult(intent, RC_MATCH_RESULT);
     }
 
@@ -463,16 +436,16 @@ public class MainActivity extends AppCompatActivity
         setViewVisibility();
 
         try{
-            String[] parts = mTurnData.data.split("--Next--");
+            String[] parts = mTurnData.data.split("--NEXT--");
             String movie = parts[0];
-            String id = parts[1];
-
-
-
+            String language = parts[1];
+            String showVowels = parts[2];
+            String hint = parts[3];
             Intent intent = new Intent(this, GameLogic.class);
             intent.putExtra("Movie", movie);
-            intent.putExtra("MovieId", id);
-            intent.putExtra("Language", parts[2]);
+            intent.putExtra("Language", language);
+            intent.putExtra("ShowVowels", showVowels);
+            intent.putExtra("Hint", hint);
             startActivityForResult(intent, RC_GUESS_MOVIE);
         }catch (Exception e){
             Toast.makeText(MainActivity.this, "Error in Strings handling", Toast.LENGTH_SHORT).show();
@@ -616,19 +589,30 @@ public class MainActivity extends AppCompatActivity
             if(response == Activity.RESULT_OK) {
                 movieName = data.getStringExtra("MovieName");
                 posterUrl = data.getStringExtra("Poster");
-                movieid = data.getStringExtra("MovieId");
                 language = data.getStringExtra("Language");
-                startMatch(movieName, movieid, language, mGoogleApiClient);
+                releaseDate = data.getStringExtra("ReleaseDate");
+                Boolean showVowels = data.getBooleanExtra("ShowVowels", false);
+                hint = data.getStringExtra("Hint");
+
+//                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//                View view = inflater.inflate(R.layout.content_game_result, null);
+//                ImageView i = (ImageView) view.findViewById(R.id.bkgd);
+                //new DownloadMoviePoster(posterUrl, "moviePoster", i);
+                startMatch(movieName, language, showVowels, hint);
             }else{
 
             }
         }
         else if(request == RC_GUESS_MOVIE){
-            String status = data.getStringExtra("Status");
-            movieName = data.getStringExtra("Movie");
-            onFinishClicked(findViewById(R.id.matchup_layout), status);
-            endGame(status, movieName,posterUrl,movieid);
-
+            if(response == Activity.RESULT_OK) {
+                String status = data.getStringExtra("Status");
+                movieName = data.getStringExtra("Movie");
+                onFinishClicked(findViewById(R.id.matchup_layout), status);
+                endGame(status, movieName, posterUrl, releaseDate);
+            } else {
+                onCancelClicked(findViewById(android.R.id.content));
+                //Games.TurnBasedMultiplayer.cancelMatch(mGoogleApiClient, "Match Invalidated! Back Button Pressed!");
+            }
         }
         else if(request == RC_MATCH_RESULT){
             if(response == Activity.RESULT_OK) {
@@ -650,14 +634,14 @@ public class MainActivity extends AppCompatActivity
     // game, saving our initial state. Calling takeTurn() will
     // callback to OnTurnBasedMatchUpdated(), which will show the game
     // UI.
-    public void startMatch(String movieName, String movieid, String language) {
+    public void startMatch(String movieName, String language, Boolean showVowels, String hint) {
 
        // mGoogleApiClient.connect();
 
 
         mTurnData = new GameTurn();
         // Some basic turn data
-        mTurnData.data = movieName+"--Next--"+movieid+"--Next--"+language;
+        mTurnData.data = movieName+"--NEXT--"+language+"--NEXT--"+showVowels+"--NEXT--"+hint;
 
         mMatch = mStartTurnBasedMatch;
 
@@ -753,7 +737,7 @@ public class MainActivity extends AppCompatActivity
             case TurnBasedMatch.MATCH_STATUS_COMPLETE:
                     mTurnData = GameTurn.unpersist(mMatch.getData());
                     try{
-                        String []parts = mTurnData.data.split("--Next--");
+                        String []parts = mTurnData.data.split("--NEXT--");
                         endGame(parts[0],parts[1],parts[2],parts[3]);
                     }catch(Exception e){
                         Toast.makeText(MainActivity.this, "Error in strings", Toast.LENGTH_SHORT).show();
@@ -815,7 +799,6 @@ public class MainActivity extends AppCompatActivity
 
         mStartTurnBasedMatch = match;
         Intent intent = new Intent(this, StartMatch.class);
-        intent.putExtra("mGoogleApiClient", (Serializable) mGoogleApiClient);
         startActivityForResult(intent, RC_START_MATCH);
 
     }
@@ -1059,16 +1042,7 @@ public class MainActivity extends AppCompatActivity
                 mGoogleApiClient.connect();
                 //playerIdDb = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
                 //insertDb(playerIdDb);
-
                 break;
-//            case R.id.sign_out_button:
-//                mSignInClicked = false;
-//                Games.signOut(mGoogleApiClient);
-//                if (mGoogleApiClient.isConnected()) {
-//                    mGoogleApiClient.disconnect();
-//                }
-//                setViewVisibility();
-//                break;
         }
     }
 
@@ -1117,6 +1091,26 @@ public class MainActivity extends AppCompatActivity
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                logOut();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void logOut(){
+        mSignInClicked = false;
+        Games.signOut(mGoogleApiClient);
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
+        setViewVisibility();
     }
 
 

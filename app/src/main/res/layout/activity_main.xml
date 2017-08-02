@@ -12,20 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
+            android:layout_height="@dimen/actionBarSize"
+            android:background="@color/grey"
             app:theme = "@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-            <ImageView
-                android:layout_width="wrap_content"
+            <ImageView android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:src="@drawable/filmymastitoolbar"
-                />
-    </android.support.v7.widget.Toolbar>
+                android:layout_marginRight="200dp"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/filmymastinoimg"
+                android:scaleType="fitCenter"/>
+        </android.support.v7.widget.Toolbar>
+
 
         <RelativeLayout
             android:id="@+id/matchup_layout"
@@ -42,17 +43,6 @@
                 android:id="@+id/slideshow"
                 android:orientation="vertical"
                 android:theme="@style/StyledIndicators">
-                <!--android.support.v4.view.ViewPager
-                    android:id="@+id/pager"
-                    android:layout_width="fill_parent"
-                    android:layout_weight="1"
-                    android:layout_height="0dp"
-                    android:layout_marginTop="5dp" />
-                <com.viewpagerindicator.CirclePageIndicator
-                    android:id="@+id/indicator"
-                    android:layout_width="fill_parent"
-                    android:padding="10dip"
-                    android:layout_height="wrap_content" /-->
                 <com.daimajia.slider.library.SliderLayout
                     android:id="@+id/slider"
                     android:layout_width="match_parent"
