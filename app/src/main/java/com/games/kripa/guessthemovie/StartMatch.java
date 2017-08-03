@@ -28,7 +28,6 @@ import java.util.concurrent.ExecutionException;
 public class StartMatch extends AppCompatActivity implements
         View.OnClickListener {
 
-    EditText movieText ;
     Button validateBtn;
     Button sendBtn;
     private Intent intent;
@@ -69,7 +68,7 @@ public class StartMatch extends AppCompatActivity implements
                 movieTitle.setText(movie);
             }
         });
-
+        ((android.widget.ProgressBar)findViewById(R.id.progress_loader)).setVisibility(View.GONE);
     }
 
     @Override
@@ -107,10 +106,15 @@ public class StartMatch extends AppCompatActivity implements
                     Intent returnIntent = new Intent();
                     returnIntent.putExtra("MovieName",title);
                     returnIntent.putExtra("Poster",posterUrl);
+                    posterUrl = posterUrl.isEmpty() || posterUrl == null ? "None": posterUrl;
                     returnIntent.putExtra("Language", language);
+                    language = language.isEmpty() ? "hi": language;
                     returnIntent.putExtra("ReleaseDate", releaseDate);
+                    releaseDate = releaseDate.isEmpty() ? "None": releaseDate;
                     returnIntent.putExtra("ShowVowels", showVowels);
-                    returnIntent.putExtra("Hint", ((EditText)findViewById(R.id.enterHint)).getText().toString());
+                    String hint = ((EditText)findViewById(R.id.enterHint)).getText().toString();
+                    hint = hint.isEmpty() ? "None" : hint;
+                    returnIntent.putExtra("Hint", hint);
                     setResult(Activity.RESULT_OK, returnIntent);
                     finish();
                     break;

@@ -27,8 +27,6 @@ import android.content.IntentSender;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -57,27 +55,12 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
 import com.google.android.gms.plus.Plus;
-import com.viewpagerindicator.CirclePageIndicator;
 
 import java.util.ArrayList;
 
 
 /**
- * TBMPSkeleton: A minimalistic "game" that shows turn-based
- * multiplayer features for Play Games Services.  In this game, you
- * can invite a variable number of players and take turns editing a
- * shared state, which consists of single string.  You can also select
- * automatch players; all known players play before automatch slots
- * are filled.
- *
- * INSTRUCTIONS: To run this sample, please set up
- * a project in the Developer Console. Then, place your app ID on
- * res/values/ids.xml. Also, change the package name to the package name you
- * used to create the client ID in Developer Console. Make sure you sign the
- * APK with the certificate whose fingerprint you entered in Developer Console
- * when creating your Client Id.
- *
- * @author Wolff (wolff@google.com), 2013
+ * @author Kripa Agarwal
  */
 public class MainActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
@@ -132,21 +115,13 @@ public class MainActivity extends AppCompatActivity
     // This is the current match data after being unpersisted.
     // Do not retain references to match data once you have
     // taken an action on the match, such as takeTurn()
-    ScoreDbHelper scores;
+    ScoreDbHelper scoreDb;
     GameTurn mTurnData;
     String movieName;
     String posterUrl ="";
-    String movieid="";
     String releaseDate="";
-    String otherStatus="";
     String language="";
-    String playerIdDb = "";
     String hint = "";
-    ViewPager viewPager;
-    PagerAdapter pageAdapter;
-    String EXTRA_QUERY = "Query";
-    CirclePageIndicator mIndicator;
-    int [] moviePosters;
     Toolbar mToolbar;
 
 
@@ -154,7 +129,10 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
-        scores = new ScoreDbHelper(getApplicationContext());
+        scoreDb = new ScoreDbHelper(getApplicationContext());
+        //Uncomment when you want to delete db
+//        SQLiteDatabase db = scoreDb.getWritableDatabase();
+//        scoreDb.onCreate(db);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -181,7 +159,6 @@ public class MainActivity extends AppCompatActivity
         super.onStart();
         Log.d(TAG, "onStart(): Connecting to Google APIs");
         mGoogleApiClient.connect();
-        //insertDb(playerIdDb);
     }
 
     @Override
@@ -276,7 +253,7 @@ public class MainActivity extends AppCompatActivity
     // and figure out what to do.
     public void onStartMatchClicked(View view) {
         Intent intent = Games.TurnBasedMultiplayer.getSelectOpponentsIntent(mGoogleApiClient,
-                1, 7, true);
+                1, 1, true);
         startActivityForResult(intent, RC_SELECT_PLAYERS);
     }
 
@@ -337,18 +314,14 @@ public class MainActivity extends AppCompatActivity
 
     // Finish the game. Sometimes, this is your only choice.
     public void onFinishClicked(View view, String status) {
-        String otherStatus;
-        playerIdDb = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
         showSpinner();
         if(status.equals("WON")){
-            updateLeaderboards(true, playerIdDb);
-            otherStatus = "LOST";
+            updateLeaderboards(true);
         }
         else{
-            updateLeaderboards(false, playerIdDb);
-            otherStatus = "WON";
+            updateLeaderboards(false);
         }
-        mTurnData.data = otherStatus+"--NEXT--"+movieName+"--NEXT--"+posterUrl+"--NEXT--"+releaseDate;
+        mTurnData.data = movieName+"--NEXT--"+posterUrl+"--NEXT--"+releaseDate;
         Games.TurnBasedMultiplayer.finishMatch(mGoogleApiClient, mMatch.getMatchId(), mTurnData.persist())
                 .setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                     @Override
@@ -361,9 +334,12 @@ public class MainActivity extends AppCompatActivity
         setViewVisibility();
     }
 
-    public void endGame(String data, String movie, String posterUrl, String releaseDate){
+    public void endGame(String movie, String posterUrl, String releaseDate){
         Intent intent = new Intent(this, GameResult.class);
-        intent.putExtra("Status", data);
+        String [] scoreInfo = new String[4];
+        scoreInfo = readFromDb(getCurrentPlayerId());
+        String status = scoreInfo[4].replaceAll("'","");
+        intent.putExtra("Status", status);
         intent.putExtra("Movie", movie);
         intent.putExtra("Poster",posterUrl);
         intent.putExtra("ReleaseDate", releaseDate);
@@ -377,7 +353,6 @@ public class MainActivity extends AppCompatActivity
         showSpinner();
 
         String nextParticipantId = getNextParticipantId();
-        // Create the next turn
 
         showSpinner();
 
@@ -410,17 +385,10 @@ public class MainActivity extends AppCompatActivity
             return;
         }
 
-
-//        ((TextView) findViewById(R.id.name_field)).setText("Hi " + Games.Players.getCurrentPlayer(
-//                mGoogleApiClient).getDisplayName() + " !");
         findViewById(R.id.login_layout).setVisibility(View.GONE);
 
-        playerIdDb = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
-
-        //change player id to email
-        String[] scoreInfo = readFromDb(playerIdDb);
-        if(scoreInfo[0]== null)
-            insertDb(playerIdDb);
+        //insert player id if he/she doesn't exist
+        insertDb(getCurrentPlayerId());
 
         if (isDoingTurn) {
             findViewById(R.id.matchup_layout).setVisibility(View.GONE);
@@ -550,7 +518,7 @@ public class MainActivity extends AppCompatActivity
                 // user canceled
                 return;
             }
-
+            showSpinner();
             // get the invitee list
             final ArrayList<String> invitees = data
                     .getStringArrayListExtra(Games.EXTRA_PLAYER_IDS);
@@ -583,9 +551,10 @@ public class MainActivity extends AppCompatActivity
                             processResult(result);
                         }
                     });
-            showSpinner();
+
         }
         else if(request == RC_START_MATCH){
+            dismissSpinner();
             if(response == Activity.RESULT_OK) {
                 movieName = data.getStringExtra("MovieName");
                 posterUrl = data.getStringExtra("Poster");
@@ -593,11 +562,6 @@ public class MainActivity extends AppCompatActivity
                 releaseDate = data.getStringExtra("ReleaseDate");
                 Boolean showVowels = data.getBooleanExtra("ShowVowels", false);
                 hint = data.getStringExtra("Hint");
-
-//                LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//                View view = inflater.inflate(R.layout.content_game_result, null);
-//                ImageView i = (ImageView) view.findViewById(R.id.bkgd);
-                //new DownloadMoviePoster(posterUrl, "moviePoster", i);
                 startMatch(movieName, language, showVowels, hint);
             }else{
 
@@ -608,20 +572,13 @@ public class MainActivity extends AppCompatActivity
                 String status = data.getStringExtra("Status");
                 movieName = data.getStringExtra("Movie");
                 onFinishClicked(findViewById(R.id.matchup_layout), status);
-                endGame(status, movieName, posterUrl, releaseDate);
+                endGame(movieName, posterUrl, releaseDate);
             } else {
                 onCancelClicked(findViewById(android.R.id.content));
-                //Games.TurnBasedMultiplayer.cancelMatch(mGoogleApiClient, "Match Invalidated! Back Button Pressed!");
             }
         }
         else if(request == RC_MATCH_RESULT){
             if(response == Activity.RESULT_OK) {
-                String status = data.getStringExtra("Status");
-                if(status == "WON")
-                    updateLeaderboards(true, playerIdDb);
-                else
-                    updateLeaderboards(false, playerIdDb);
-
             }
            setViewVisibility();
 
@@ -645,12 +602,9 @@ public class MainActivity extends AppCompatActivity
 
         mMatch = mStartTurnBasedMatch;
 
-        String playerId = Games.Players.getCurrentPlayerId(this.mGoogleApiClient);
         String nextParticipantId = getNextParticipantId();
 
-
         showSpinner();
-
 
         Games.TurnBasedMultiplayer.takeTurn(this.mGoogleApiClient, mStartTurnBasedMatch.getMatchId(),
                 mTurnData.persist(), nextParticipantId).setResultCallback(
@@ -715,6 +669,16 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public String getNextPlayerId(){
+        String nextParticipantId  = getNextParticipantId();
+        return mMatch.getParticipant(nextParticipantId).getDisplayName();
+    }
+
+    public String getCurrentPlayerId(){
+        String playerId = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
+        return playerId;
+    }
+
     // This is the main function that gets called when players choose a match
     // from the inbox, or else create a match and want to start it.
     public void updateMatch(TurnBasedMatch match) {
@@ -738,7 +702,11 @@ public class MainActivity extends AppCompatActivity
                     mTurnData = GameTurn.unpersist(mMatch.getData());
                     try{
                         String []parts = mTurnData.data.split("--NEXT--");
-                        endGame(parts[0],parts[1],parts[2],parts[3]);
+                        if(parts.length > 1) {
+                            endGame(parts[0], parts[1], parts[2]);
+                        } else {
+                            endGame(parts[0], "None", "None");
+                        }
                     }catch(Exception e){
                         Toast.makeText(MainActivity.this, "Error in strings", Toast.LENGTH_SHORT).show();
                     }
@@ -785,7 +753,7 @@ public class MainActivity extends AppCompatActivity
 
     private void processResult(TurnBasedMultiplayer.InitiateMatchResult result) {
         TurnBasedMatch match = result.getMatch();
-        dismissSpinner();
+        mStartTurnBasedMatch = match;
 
         if (!checkStatusCode(match, result.getStatus().getStatusCode())) {
             return;
@@ -796,8 +764,6 @@ public class MainActivity extends AppCompatActivity
             updateMatch(match);
             return;
         }
-
-        mStartTurnBasedMatch = match;
         Intent intent = new Intent(this, StartMatch.class);
         startActivityForResult(intent, RC_START_MATCH);
 
@@ -919,28 +885,27 @@ public class MainActivity extends AppCompatActivity
         return false;
     }
 
-    void updateLeaderboards(boolean won, String playerId) {
+    void updateLeaderboards(boolean won) {
         String [] scoreInfo = new String[4];
-        scoreInfo = readFromDb(playerId);
+        scoreInfo = readFromDb(getCurrentPlayerId());
         int scores =  Integer.parseInt(scoreInfo[1].replaceAll("'",""));
         int totalMatches =  Integer.parseInt(scoreInfo[2].replaceAll("'",""));
         int lostMatches =  Integer.parseInt(scoreInfo[3].replaceAll("'",""));
         if(won) {
-            scores = scores+5;
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadershipId), scores);
-            updateDb(playerId, scores, totalMatches=totalMatches+1, lostMatches);
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadershipId), scores+5);
+            updateDb(getCurrentPlayerId(), scores+5 , totalMatches+1, lostMatches, "won");
+            updateDb(getNextPlayerId(), scores, totalMatches+1, lostMatches+1, "lost");
         }
         else {
-            scores = scores-1;
             Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadershipId), scores);
-            updateDb(playerId, scores, totalMatches=totalMatches+1, lostMatches=lostMatches+1);
+            updateDb(getCurrentPlayerId(), scores, totalMatches+1, lostMatches+1, "lost");
+            updateDb(getNextPlayerId(), scores+5, totalMatches+1, lostMatches, "won");
         }
     }
 
     public void insertDb(String playerId){
         // Gets the data repository in write mode
-        SQLiteDatabase db = scores.getWritableDatabase();
-       // scores.onCreate(db);
+        SQLiteDatabase db = scoreDb.getWritableDatabase();
         String initialValue ="'0'";
 
         // Create a new map of values, where column names are the keys
@@ -949,6 +914,7 @@ public class MainActivity extends AppCompatActivity
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_SCORE, initialValue);
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES, initialValue);
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES, initialValue);
+        values.put(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS, initialValue);
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
@@ -959,14 +925,15 @@ public class MainActivity extends AppCompatActivity
         db.close();
     }
 
-    public void updateDb(String playerId, int score, int matches, int lost){
-        SQLiteDatabase db = scores.getReadableDatabase();
+    public void updateDb(String playerId, int score, int matches, int lost, String status){
+        SQLiteDatabase db = scoreDb.getReadableDatabase();
 
         // New value for one column
         ContentValues values = new ContentValues();
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_SCORE, "'"+ score+"'");
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES, "'"+matches+"'");
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES, "'"+lost+"'");
+        values.put(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS,  "'"+status+"'");
 
 
         // Which row to update, based on the ID
@@ -982,14 +949,14 @@ public class MainActivity extends AppCompatActivity
     }
 
     public String[] readFromDb(String playerId){
-        SQLiteDatabase db = scores.getReadableDatabase();
+        SQLiteDatabase db = scoreDb.getReadableDatabase();
 
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {"*"
         };
 
-        String[] results = {null, null, null, null};
+        String[] results = {null, null, null, null, null};
 
 
         // Which row to update, based on the ID
@@ -1014,6 +981,7 @@ public class MainActivity extends AppCompatActivity
             results[1] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_SCORE));
             results[2] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES));
             results[3] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES));
+            results[4] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS));
         }
         db.close();
         return results;
@@ -1029,19 +997,10 @@ public class MainActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
-                // Check to see the developer who's running this sample code read the instructions :-)
-                // NOTE: this check is here only because this is a sample! Don't include this
-                // check in your actual production app.
-               /* if (!BaseGameUtils.verifySampleSetup(this, R.string.app_id)) {
-                    Log.w(TAG, "*** Warning: setup prolems detected. Sign in may not work!");
-                }*/
-
                 mSignInClicked = true;
                 mTurnBasedMatch = null;
                 findViewById(R.id.sign_in_button).setVisibility(View.GONE);
                 mGoogleApiClient.connect();
-                //playerIdDb = Games.Players.getCurrentPlayer(mGoogleApiClient).getDisplayName();
-                //insertDb(playerIdDb);
                 break;
         }
     }

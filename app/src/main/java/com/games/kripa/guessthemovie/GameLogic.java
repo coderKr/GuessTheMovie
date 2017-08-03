@@ -16,7 +16,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class GameLogic extends AppCompatActivity implements View.OnClickListener {
@@ -33,7 +32,6 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
     private int uniqueChar =0;
     public Intent returnIntent;
     Toolbar mToolbar;
-    List<String> wrongGuesses = new ArrayList<String>(Arrays.asList("B","O","L","L1","Y","W","O","O","D"));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +50,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
         }
         showVowels = intent.getStringExtra("ShowVowels");
         hint = intent.getStringExtra("Hint");
-        ((TextView)findViewById(R.id.hint)).setText("Hint :" + hint);
+        ((TextView)findViewById(R.id.hint)).setText("Hint: " + hint);
         displayMovie = actualMovie;
         displayMovie = getBlanks(displayMovie);
         TextView t = (TextView) findViewById(R.id.display);
@@ -167,7 +165,6 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             if (!guessedLetters.contains("" + movie.charAt(i))) {
                 if(movie.charAt(i) == ' '){
                     tempStr = tempStr + "/ ";
-                    //movie.replace("" + movie.charAt(i), "/ ");
                 }
                 else{
                     if(vowels.indexOf(movie.charAt(i)) >= 0) {
@@ -176,13 +173,10 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
                     }
                     else
                         tempStr = tempStr + "_ ";
-                   // movie = movie.replace("" + movie.charAt(i),"_ ");
                 }
             }
             else
             {
-               // movie = movie.replace("" + actualMovie.charAt(i),
-               //         actualMovie.charAt(i)+" ");
                 tempStr = tempStr + movie.charAt(i)+" ";
             }
 

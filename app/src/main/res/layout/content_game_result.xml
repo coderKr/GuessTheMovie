@@ -14,16 +14,17 @@
     android:background="@color/colorBkgd">
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="250dp"
         android:visibility="gone"
         android:id="@+id/bkgd"/>
     <TextView
         android:id="@+id/won"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="true"
         android:text="@string/won"
-        android:layout_marginTop="150dp"
         android:visibility="gone"
+        android:layout_marginTop="270dp"
         android:textSize="25dp"
         android:textColor="@color/white"/>
     <TextView
@@ -31,34 +32,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="270dp"
         android:textSize="25dp"
         android:text="@string/lost"
         android:visibility="gone"
         android:textColor="@color/white"/>
-    <!--<TextView-->
-        <!--android:id="@+id/error_result"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:layout_marginTop="150dp"-->
-        <!--android:textSize="25dp"-->
-        <!--android:text="@string/lost"-->
-        <!--android:visibility="gone"-->
-        <!--android:textColor="@color/white"/>-->
-    <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:id="@+id/movieName"-->
-        <!--android:layout_marginTop="250dp"-->
-        <!--android:textSize="25dp"-->
-        <!--android:text=""-->
-        <!--android:visibility="visible"-->
-        <!--android:textColor="@color/white"/>-->
     <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/won"
+        android:layout_marginTop="350dp"
         android:id="@+id/selected_movie"
         android:visibility="visible"
         android:textColor="@color/white"

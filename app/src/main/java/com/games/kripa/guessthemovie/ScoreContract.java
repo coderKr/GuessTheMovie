@@ -17,6 +17,7 @@ public class ScoreContract {
             public static final String COLUMN_NAME_SCORE = "Score";
             public static final String COLUMN_NAME_TOTAL_MATCHES = "Matches";
             public static final String COLUMN_NAME_LOST_MATCHES = "LostMatches";
+            public static final String COLUMN_NAME_STATUS = "Status";
         }
 
 
