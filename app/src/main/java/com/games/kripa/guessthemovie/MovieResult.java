@@ -13,6 +13,8 @@ public class MovieResult {
     private final String language;
     private final String description;
     private final String releaseDate;
+    private final Boolean showVowels;
+    private final String hint;
 
     private MovieResult(Builder builder){
         backdropPath = builder.backdropPath;
@@ -23,6 +25,8 @@ public class MovieResult {
         language = builder.language;
         description = builder.description;
         releaseDate = builder.releaseDate;
+        showVowels = builder.showVowels;
+        hint = builder.hint;
     }
 
     public static class Builder {
@@ -34,6 +38,8 @@ public class MovieResult {
         private String language;
         private String description;
         private String releaseDate;
+        private Boolean showVowels;
+        private String hint;
 
         public Builder(int id, String title) {
             this.id = id;
@@ -81,6 +87,15 @@ public class MovieResult {
             return this;
         }
 
+        public Builder setShowVowels(Boolean showVowels){
+            this.showVowels = showVowels;
+            return this;
+        }
+        public Builder setHint(String hint){
+            this.hint = hint;
+            return this;
+        }
+
         public MovieResult build() {
             return new MovieResult(this);
         }
@@ -123,4 +138,10 @@ public class MovieResult {
     public String getDescription() { return description;}
 
     public String getReleaseDate() { return releaseDate;}
+
+    public String getHint(){ return hint;}
+
+    public Boolean getShowVowels() {
+        return showVowels;
+    }
 }

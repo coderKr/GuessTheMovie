@@ -56,6 +56,9 @@ import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
 import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
 import com.google.android.gms.plus.Plus;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 
@@ -243,6 +246,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onShowLeaderboardsRequested(View view) {
         if ((mGoogleApiClient != null) && (mGoogleApiClient.isConnected())) {
+            updateScoresFromDb();
             startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
                     getString(R.string.leadership_id)), RC_REQUEST_LEADERBOARD);
         } else {
@@ -314,7 +318,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     // Finish the game. Sometimes, this is your only choice.
-    public void onFinishClicked(View view, String status) {
+    public void onFinishClicked(View view, String status) throws JSONException {
         showSpinner();
         if(status.equals("WON")){
             updateLeaderboards(true);
@@ -322,8 +326,11 @@ public class MainActivity extends AppCompatActivity
         else{
             updateLeaderboards(false);
         }
-        mTurnData.data = movieName+"--NEXT--"+posterUrl+"--NEXT--"+releaseDate;
-        Games.TurnBasedMultiplayer.finishMatch(mGoogleApiClient, mMatch.getMatchId(), mTurnData.persist())
+        JSONObject endGameInfo = new JSONObject();
+        endGameInfo.put("movieName", movieName);
+        endGameInfo.put("posterUrl", posterUrl);
+        endGameInfo.put("releaseDate", releaseDate);
+        Games.TurnBasedMultiplayer.finishMatch(mGoogleApiClient, mMatch.getMatchId(), mTurnData.persist(endGameInfo))
                 .setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                     @Override
                     public void onResult(TurnBasedMultiplayer.UpdateMatchResult result) {
@@ -358,7 +365,7 @@ public class MainActivity extends AppCompatActivity
         showSpinner();
 
         Games.TurnBasedMultiplayer.takeTurn(mGoogleApiClient, mMatch.getMatchId(),
-                mTurnData.persist(), nextParticipantId).setResultCallback(
+                mTurnData.persist(null), nextParticipantId).setResultCallback(
                 new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                     @Override
                     public void onResult(TurnBasedMultiplayer.UpdateMatchResult result) {
@@ -405,11 +412,14 @@ public class MainActivity extends AppCompatActivity
         setViewVisibility();
 
         try{
-            String[] parts = mTurnData.data.split("--NEXT--");
-            String movie = parts[0];
-            String language = parts[1];
-            String showVowels = parts[2];
-            String hint = parts[3];
+            //String[] parts = mTurnData.data.split("--NEXT--");
+            String movie = mTurnData.data.getString("movieName");
+            String language = mTurnData.data.getString("language");
+            Boolean showVowels = mTurnData.data.getBoolean("showVowels");
+            String hint = mTurnData.data.getString("hint");
+            posterUrl = mTurnData.data.getString("posterUrl");
+            releaseDate = mTurnData.data.getString("releaseDate");
+
             Intent intent = new Intent(this, GameLogic.class);
             intent.putExtra("Movie", movie);
             intent.putExtra("Language", language);
@@ -417,7 +427,8 @@ public class MainActivity extends AppCompatActivity
             intent.putExtra("Hint", hint);
             startActivityForResult(intent, RC_GUESS_MOVIE);
         }catch (Exception e){
-            Toast.makeText(MainActivity.this, "Error in Strings handling", Toast.LENGTH_SHORT).show();
+            Toast.makeText(MainActivity.this, "This match is either finished or cancelled. Check completed matches for more information", Toast.LENGTH_SHORT).show();
+            setViewVisibility();
         }
 
     }
@@ -562,7 +573,13 @@ public class MainActivity extends AppCompatActivity
                 releaseDate = data.getStringExtra("ReleaseDate");
                 Boolean showVowels = data.getBooleanExtra("ShowVowels", false);
                 hint = data.getStringExtra("Hint");
-                startMatch(movieName, language, showVowels, hint);
+                posterUrl = posterUrl.isEmpty()? "null" : posterUrl;
+                releaseDate = releaseDate.isEmpty() ? "null" :  releaseDate;
+                try {
+                    startMatch(movieName, language, showVowels, hint, posterUrl, releaseDate);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }else{
 
             }
@@ -571,7 +588,11 @@ public class MainActivity extends AppCompatActivity
             if(response == Activity.RESULT_OK) {
                 String status = data.getStringExtra("Status");
                 movieName = data.getStringExtra("Movie");
-                onFinishClicked(findViewById(R.id.matchup_layout), status);
+                try {
+                    onFinishClicked(findViewById(R.id.matchup_layout), status);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 endGame(movieName, posterUrl, releaseDate);
             } else {
                 onCancelClicked(findViewById(android.R.id.content));
@@ -594,14 +615,19 @@ public class MainActivity extends AppCompatActivity
     // game, saving our initial state. Calling takeTurn() will
     // callback to OnTurnBasedMatchUpdated(), which will show the game
     // UI.
-    public void startMatch(String movieName, String language, Boolean showVowels, String hint) {
+    public void startMatch(String movieName, String language, Boolean showVowels, String hint, String posterUrl, String releaseDate) throws JSONException {
 
        // mGoogleApiClient.connect();
 
 
         mTurnData = new GameTurn();
-        // Some basic turn data
-        mTurnData.data = movieName+"--NEXT--"+language+"--NEXT--"+showVowels+"--NEXT--"+hint;
+        JSONObject turnDataInfo = new JSONObject();
+        turnDataInfo.put("movieName", movieName);
+        turnDataInfo.put("language", language);
+        turnDataInfo.put("showVowels", showVowels);
+        turnDataInfo.put("posterUrl", posterUrl);
+        turnDataInfo.put("releaseDate", releaseDate);
+        turnDataInfo.put("hint", hint);
 
         mMatch = mStartTurnBasedMatch;
 
@@ -610,7 +636,7 @@ public class MainActivity extends AppCompatActivity
         showSpinner();
 
         Games.TurnBasedMultiplayer.takeTurn(this.mGoogleApiClient, mStartTurnBasedMatch.getMatchId(),
-                mTurnData.persist(), nextParticipantId).setResultCallback(
+                mTurnData.persist(turnDataInfo), nextParticipantId).setResultCallback(
                 new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
                     @Override
                     public void onResult(TurnBasedMultiplayer.UpdateMatchResult result) {
@@ -704,14 +730,9 @@ public class MainActivity extends AppCompatActivity
             case TurnBasedMatch.MATCH_STATUS_COMPLETE:
                     mTurnData = GameTurn.unpersist(mMatch.getData());
                     try{
-                        String []parts = mTurnData.data.split("--NEXT--");
-                        if(parts.length > 1) {
-                            endGame(parts[0], parts[1], parts[2]);
-                        } else {
-                            endGame(parts[0], "None", "None");
-                        }
+                            endGame(mTurnData.data.getString("movieName"), mTurnData.data.getString("posterUrl"),mTurnData.data.getString("releaseDate"));
                     }catch(Exception e){
-                        Toast.makeText(MainActivity.this, "Error in strings", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MainActivity.this, "Match no longer exists!", Toast.LENGTH_SHORT).show();
                     }
 
                     showWarning(
@@ -889,20 +910,35 @@ public class MainActivity extends AppCompatActivity
     }
 
     void updateLeaderboards(boolean won) {
+        String [] scoreInfoPlayer1 = new String[4];
+        scoreInfoPlayer1 = readFromDb(getCurrentPlayerId());
+        int scoresPlayer1 =  Integer.parseInt(scoreInfoPlayer1[1].replaceAll("'",""));
+        int totalMatchesPlayer1 =  Integer.parseInt(scoreInfoPlayer1[2].replaceAll("'",""));
+        int lostMatchesPlayer1 =  Integer.parseInt(scoreInfoPlayer1[3].replaceAll("'",""));
+        String [] scoreInfoPlayer2 = new String[4];
+        scoreInfoPlayer2 = readFromDb(getNextPlayerId());
+        int scoresPlayer2 =  Integer.parseInt(scoreInfoPlayer2[1].replaceAll("'",""));
+        int totalMatchesPlayer2 =  Integer.parseInt(scoreInfoPlayer2[2].replaceAll("'",""));
+        int lostMatchesPlayer2 =  Integer.parseInt(scoreInfoPlayer2[3].replaceAll("'",""));
+        if(won) {
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadership_id), scoresPlayer1+5);
+            updateDb(getCurrentPlayerId(), scoresPlayer1+5, totalMatchesPlayer1+1, lostMatchesPlayer1, "won");
+            updateDb(getNextPlayerId(), scoresPlayer2, totalMatchesPlayer2+1, lostMatchesPlayer2+1, "lost");
+        }
+        else {
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadership_id), scoresPlayer1);
+            updateDb(getCurrentPlayerId(), scoresPlayer1, totalMatchesPlayer1+1, lostMatchesPlayer1+1, "lost");
+            updateDb(getNextPlayerId(), scoresPlayer2+5, totalMatchesPlayer2+1, lostMatchesPlayer2, "won");
+        }
+    }
+
+    void updateScoresFromDb(){
         String [] scoreInfo = new String[4];
         scoreInfo = readFromDb(getCurrentPlayerId());
         int scores =  Integer.parseInt(scoreInfo[1].replaceAll("'",""));
-        int totalMatches =  Integer.parseInt(scoreInfo[2].replaceAll("'",""));
-        int lostMatches =  Integer.parseInt(scoreInfo[3].replaceAll("'",""));
-        if(won) {
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadership_id), scores+5);
-            updateDb(getCurrentPlayerId(), scores+5 , totalMatches+1, lostMatches, "won");
-            updateDb(getNextPlayerId(), scores, totalMatches+1, lostMatches+1, "lost");
-        }
-        else {
+        String status =  scoreInfo[4].replaceAll("'","");
+        if(status.equals("won")){
             Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadership_id), scores);
-            updateDb(getCurrentPlayerId(), scores, totalMatches+1, lostMatches+1, "lost");
-            updateDb(getNextPlayerId(), scores+5, totalMatches+1, lostMatches, "won");
         }
     }
 

@@ -31,8 +31,8 @@ public class GameResult extends AppCompatActivity implements View.OnClickListene
         TextView movieTitle = (TextView) findViewById(R.id.selected_movie_title);
         TextView movieReleaseDate =(TextView)findViewById(R.id.selected_movie_release_date);
         ImageView i = (ImageView) findViewById(R.id.bkgd);
-        if(intent.getStringExtra("Movie")!="") {
-            if(!posterUrl.equals("None") && !posterUrl.equals("null")) {
+        if(!intent.getStringExtra("Movie").isEmpty() && intent.getStringExtra("Movie")!=null && !intent.getStringExtra("Movie").equals("null")) {
+            if(!posterUrl.equals("None") && !posterUrl.equals("null") && !posterUrl.equals(null)) {
                 posterUrl = "https://image.tmdb.org/t/p/w300/" + intent.getStringExtra("Poster");
                 new DownloadMoviePoster(posterUrl, "moviePoster", i, new ProgressDialog(this));
                 i.setVisibility(View.VISIBLE);

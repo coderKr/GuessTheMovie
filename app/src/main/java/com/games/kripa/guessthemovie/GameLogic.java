@@ -26,7 +26,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
     private String status = "LOST";
     private String displayMovie;
     String language;
-    String showVowels = "true";
+    Boolean showVowels = true;
     String hint = "";
     boolean win,lost;
     private int uniqueChar =0;
@@ -48,7 +48,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
             ChancesLeft setByLang = (ChancesLeft) findViewById(R.id.ChanceB);
             setByLang.setText("H");
         }
-        showVowels = intent.getStringExtra("ShowVowels");
+        showVowels = intent.getBooleanExtra("ShowVowels", true);
         hint = intent.getStringExtra("Hint");
         ((TextView)findViewById(R.id.hint)).setText("Hint: " + hint);
         displayMovie = actualMovie;
@@ -158,7 +158,7 @@ public class GameLogic extends AppCompatActivity implements View.OnClickListener
     public String getBlanks(String movie){
         String tempStr="";
         String vowels = "";
-        if (showVowels.equals("true")) {
+        if (showVowels == true) {
             vowels = "AEIOU";
         }
         for(int i=0;i<movie.length();i++){

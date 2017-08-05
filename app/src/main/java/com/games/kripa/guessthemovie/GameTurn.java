@@ -16,18 +16,20 @@ public class GameTurn {
 
     public static final String TAG = "EBTurn";
 
-    public String data = "";
+    public JSONObject data = null;
+
     public int turnCounter;
 
     public GameTurn() {
     }
 
+
     // This is the byte array we will write out to the TBMP API.
-    public byte[] persist() {
+    public byte[] persist(JSONObject movieInfo) {
         JSONObject retVal = new JSONObject();
 
         try {
-            retVal.put("data", data);
+            retVal.put("data", movieInfo);
             retVal.put("turnCounter", turnCounter);
 
         } catch (JSONException e) {
@@ -66,7 +68,7 @@ public class GameTurn {
             JSONObject obj = new JSONObject(st);
 
             if (obj.has("data")) {
-                retVal.data = obj.getString("data");
+                retVal.data = obj.getJSONObject("data");
             }
             if (obj.has("turnCounter")) {
                 retVal.turnCounter = obj.getInt("turnCounter");
