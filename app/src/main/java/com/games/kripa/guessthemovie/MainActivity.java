@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity
     private static final int RC_START_MATCH = 1001;
     private static final int RC_GUESS_MOVIE = 2001;
     private static final int RC_MATCH_RESULT = 4001;
+    private  static final int RC_GAME_DESCRIPTION = 5001;
 
     private static final int RC_UNUSED = 3001;
 
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity
     public void onShowLeaderboardsRequested(View view) {
         if ((mGoogleApiClient != null) && (mGoogleApiClient.isConnected())) {
             startActivityForResult(Games.Leaderboards.getLeaderboardIntent(mGoogleApiClient,
-                    getString(R.string.leadershipId)), RC_REQUEST_LEADERBOARD);
+                    getString(R.string.leadership_id)), RC_REQUEST_LEADERBOARD);
         } else {
             makeSimpleDialog(this, getString(R.string.leaderboards_not_available)).show();
         }
@@ -419,7 +420,6 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(MainActivity.this, "Error in Strings handling", Toast.LENGTH_SHORT).show();
         }
 
-
     }
 
     // Helpful dialogs
@@ -581,7 +581,10 @@ public class MainActivity extends AppCompatActivity
             if(response == Activity.RESULT_OK) {
             }
            setViewVisibility();
-
+        } else if(request == RC_GAME_DESCRIPTION){
+            if(response == Activity.RESULT_OK) {
+            }
+            setViewVisibility();
         }
     }
 
@@ -892,12 +895,12 @@ public class MainActivity extends AppCompatActivity
         int totalMatches =  Integer.parseInt(scoreInfo[2].replaceAll("'",""));
         int lostMatches =  Integer.parseInt(scoreInfo[3].replaceAll("'",""));
         if(won) {
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadershipId), scores+5);
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadership_id), scores+5);
             updateDb(getCurrentPlayerId(), scores+5 , totalMatches+1, lostMatches, "won");
             updateDb(getNextPlayerId(), scores, totalMatches+1, lostMatches+1, "lost");
         }
         else {
-            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadershipId), scores);
+            Games.Leaderboards.submitScore(mGoogleApiClient, getString(R.string.leadership_id), scores);
             updateDb(getCurrentPlayerId(), scores, totalMatches+1, lostMatches+1, "lost");
             updateDb(getNextPlayerId(), scores+5, totalMatches+1, lostMatches, "won");
         }
@@ -1058,6 +1061,9 @@ public class MainActivity extends AppCompatActivity
             case R.id.action_logout:
                 logOut();
                 return true;
+            case R.id.action_game_rules:
+                Intent intent = new Intent(this, GameDescription.class);
+                startActivityForResult(intent, RC_GAME_DESCRIPTION);
             default:
                 return super.onOptionsItemSelected(item);
         }
