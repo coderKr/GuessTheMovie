@@ -41,7 +41,7 @@
     <string name="invalid_movie">Invalid movie entered. Try again!</string>
     <string name="selected_movie">The movie you have selected is : </string>
     <string name="titlebar">Bollywood Masti!!</string>
-    <string name="leadershipId">CgkIp8vn4LUBEAIQAg</string>
+    <string name="leadership_id">CgkIp8vn4LUBEAIQAg</string>
     <string name="leaderboards_not_available" />
     <string name="action_search">Search</string>
     <string name="search_hint">Search Movies</string>
@@ -51,8 +51,70 @@
     <string name="selected_movie_language">Language :</string>
     <string name="selected_movie_release_date">Release Date :</string>
     <string name="selected_movie_description">Description :</string>
-    <string name="showVowel">Make vowels visible for your Opponent</string>
+    <string name="show_vowel">Make vowels visible for your Opponent</string>
     <string name="hint">Optional: Give Hint to your Opponent</string>
     <string name="score_btn">Your ScoreBoard</string>
+    <string name="understand_game">Understand Game</string>
+    <string name="game_description_title">
+        Game Description
+    </string>
+    <string name="game_description">
+        This is a 2 player Turn Based Game. It\'s based on a very popular paper game played by school students in India. Player 1 challenges Player 2 with a movie name to guess.Player 2 has 9 chances to guess the movie name. If he manages to do so, he wins else he loses.
+    </string>
+    <string name="games_steps_title">
+         Game Steps
+    </string>
+    <string name="player1">
+         Player 1
+    </string>
+    <string name="player1_steps_1">
+        1) Choose a player to challenge
+    </string>
+    <string name="player1_steps_2">
+        2) Choose a movie from Bollywood/Hollywood. Pick your choice from the dropdown/enter directly and validate the movie. You will see some movie info like title, description and release date. If this is the movie you had chosen, click on Send.
+    </string>
+    <string name="player1_steps_3a">
+        3)  a) You will see two more options before you send the movie. Do you want the opponent to see vowels in the movie blanks. For Example: - If you send the movie Dil. Should the opponent see _ _ _ or _ I _
+    </string>
+    <string name="player1_steps_3b">
+            b) You can choose to write some text as hint for the opponent
+    </string>
+    <string name="player1_steps_4">
+        4) Send the movie to your opponent
+    </string>
+    <string name="player2">
+         Player 2
+    </string>
+    <string name="player2_steps_1">
+        1)  The player chosen will receive a match request from google. He can choose to accept or decline the invitation.
+    </string>
+    <string name="player2_steps_2">
+        2)  If user accepts the invitation, he is redirected to a guessing movie page where he will blanks instead of movie name,
+            hint if provided by Player 1 and a BOLLYWOOD/HOLLYWOOD sign at top.
+    </string>
+    <string name="player2_steps_3">
+        3) Every wrong guess draws a line through the letters BOLLYWOOD. You have 9 chances overall to guess the movie
+    </string>
+    <string name="player2_steps_4">
+        4)  Depending on whether you win or lose you will be redirected to results page and your score will be updated
+    </string>
+    <string name="scoring_title">
+        Scoring
+    </string>
+     <string name="scoring_info">
+        Scoring is based on Leaderboard by google play services. When you win a match +5 points will be added to your score. Your leaderboard score will only reflect your maximum score. You can see your position as compared to other players.
+    </string>
+
+    <string name="cancellation">
+          Cancellation: If you press back button from movie guessing page, the match will be cancelled.
+    </string>
+    <string name="notes">
+        Current Bugs:
+        The api used for getting movie info is slightly inaccurate because of which sometimes hindi movies will show as HOLLYWOOD.
+        Sometimes movie poster wont be displayed.
+        In some rare cases you will get Error Handling Strings
+    </string>
+    <string name="go_back_to_main">Go Back to Main Menu</string>
+
 
 </resources>

@@ -131,7 +131,7 @@
                         android:layout_height="wrap_content"
                         android:textColor="@color/white"
                         android:shadowColor="@color/colorPrimary"
-                        android:text="@string/showVowel"
+                        android:text="@string/show_vowel"
                         android:layout_below="@+id/selected_movie"
                         android:buttonTint="@color/colorPrimary"
                         android:onClick="onClick"/>

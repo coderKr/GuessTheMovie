@@ -8,10 +8,5 @@
         <!-- API 11 theme customizations can go here. -->
     </style>
 
-    <style name="diagonalStyle">
-        <item name="android:background">@drawable/strikethrough</item>
-        <item name="android:animation">@anim/fade</item>
-    </style>
-
 
 </resources>

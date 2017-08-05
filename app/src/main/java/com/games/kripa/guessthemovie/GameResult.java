@@ -26,8 +26,8 @@ public class GameResult extends AppCompatActivity implements View.OnClickListene
         Intent intent = getIntent();
         status = (intent.getStringExtra("Status")).toUpperCase();
         String posterUrl = intent.getStringExtra("Poster");
-        Button GoBack = (Button) findViewById(R.id.goback);
-        GoBack.setOnClickListener(this);
+        Button goBack = (Button) findViewById(R.id.goback);
+        goBack.setOnClickListener(this);
         TextView movieTitle = (TextView) findViewById(R.id.selected_movie_title);
         TextView movieReleaseDate =(TextView)findViewById(R.id.selected_movie_release_date);
         ImageView i = (ImageView) findViewById(R.id.bkgd);
