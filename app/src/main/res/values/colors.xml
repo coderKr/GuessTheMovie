@@ -4,7 +4,8 @@
     <color name="colorButton">#FF9900</color>
     <color name="colorSecondary">#FF9933</color>
     <color name="colorButtonOptn">#FF5A09</color>
-    <color name="colorBkgd">#393939</color>
+    <color name="colorBkgd">#000000</color>
+    <!--<color name="colorBkgd">#393939</color>-->
     <color name="colorBkgd1">#766151</color>
     <color name="colorBkgd2">#48372F</color>
     <color name="white">#FFFFFF</color>

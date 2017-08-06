@@ -1,7 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/colorBkgd">
 
     <LinearLayout
         android:id="@+id/login_layout"
@@ -24,13 +25,13 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_large"
             android:text="@string/welcome_to_our_skeleton_app_"
+            android:textColor="@color/white"
             android:textAppearance="@style/GuessWordText" />
 
         <com.google.android.gms.common.SignInButton
             android:id="@+id/sign_in_button"
             android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            style="@style/Button1">
+            android:layout_height="wrap_content">
         </com.google.android.gms.common.SignInButton>
     </LinearLayout>
 

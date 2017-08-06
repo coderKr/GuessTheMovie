@@ -55,6 +55,9 @@
         <activity
             android:name=".GameDescription"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="43bb77640983d31bdb14433a07b08d6accd2efba" />
     </application>
 
 </manifest>

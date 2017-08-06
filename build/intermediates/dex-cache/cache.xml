@@ -3,6 +3,33 @@
 
     <item
         is-multidex="true"
+        jar="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="29ab0588d2c74df107325130d6e1ee2cf5e98ff3">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_9c41695737a68eef14647a7fed5fb53d1e1dba11\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\5e207077bbc724bbbc4bc129572e3994016107c3\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="461929440e66685425a298693507f6fb27b0a872">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\10\classes_8d688fcd07610278f63b8536b62852712e53294e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\5e207077bbc724bbbc4bc129572e3994016107c3\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="461929440e66685425a298693507f6fb27b0a872">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_8d688fcd07610278f63b8536b62852712e53294e\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
         jar="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\libs\android-support-v4.jar"
         jumboMode="true"
         optimize="true"
@@ -12,21 +39,30 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jar="C:\Users\Kripa\.android\build-cache\e7be5b87d7571c36c7b574ddf92f4f75de81b202\output\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.1"
-        sha1="cc9ad287b60d4199dff7a3f1001678efc499ad36">
-        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10000\instant-run-bootstrap_9c41695737a68eef14647a7fed5fb53d1e1dba11\classes.dex" />
+        sha1="646439081688c43e04ec4aa7ba6915ddfdcc337f">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_08e21f5dcfbaea2a253cb54e6efd18c0c17f4909\classes.dex" />
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Kripa\AppData\Local\Android\sdk2\extras\m2repository\com\android\support\constraint\constraint-layout-solver\1.0.2\constraint-layout-solver-1.0.2.jar"
+        jar="C:\Users\Kripa\.android\build-cache\08af224eeca4da016dc2da8947c8e394a8eb221e\output\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.1"
-        sha1="b9cd8fc6bd15cb915735d34535db30ece0c44603">
-        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\constraint-layout-solver-1.0.2_03112d4fe2c4bc12e77530f349a90870a4c70b6b\classes.dex" />
+        sha1="204f607419af8247cc1b2a61f50663c65f841c12">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_8f2cd156898f2727823b73658f3fdf110ac1237a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\ea10e88f85601e8ccb21a004502061f651ba01c2\output\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="26.0.1"
+        sha1="7045152f3bd1870740b9bcb1cddff495e189774e">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_a84b0cab542dce1a1d89e2fe7032c21bbb2a2a20\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -48,12 +84,66 @@
     </item>
     <item
         is-multidex="true"
-        jar="C:\Users\Kripa\.android\build-cache\f45b070794e4b1d910b8fef293f627fd4658f57b\output\jars\classes.jar"
+        jar="C:\Users\Kripa\.android\build-cache\05be1ab0e09f05430e423b0ddbdfa9562539a7e7\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="005d20a198159b87f65812fc5c51b2d84c5eba0a">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\10\classes_6170f3236ef7501fcfdd6ee522cc2d13f72829c6\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\libs\android-support-v4.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="5896b0a4e377ac4242eb2bc785220c1c4fc052f4">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\2\android-support-v4_1dc4ac6c703847c87eaa844308485be746afd091\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\08af224eeca4da016dc2da8947c8e394a8eb221e\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="204f607419af8247cc1b2a61f50663c65f841c12">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\10\classes_8f2cd156898f2727823b73658f3fdf110ac1237a\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\05be1ab0e09f05430e423b0ddbdfa9562539a7e7\output\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="26.0.1"
-        sha1="44ee06abb66da30f5855e6bf54574e64cdcd982a">
-        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_7c6fd01d0f698721e854a5be25b98be6072c83b3\classes.dex" />
+        sha1="005d20a198159b87f65812fc5c51b2d84c5eba0a">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\debug\folders\1000\10\classes_6170f3236ef7501fcfdd6ee522cc2d13f72829c6\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\ea10e88f85601e8ccb21a004502061f651ba01c2\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="7045152f3bd1870740b9bcb1cddff495e189774e">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\10\classes_a84b0cab542dce1a1d89e2fe7032c21bbb2a2a20\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\libs\universal-image-loader-1.8.4-with-sources.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="eba3ec78458fcb9bdd8bb7eff1a2f6f26f8fa00a">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\2\universal-image-loader-1.8.4-with-sources_b754a0375e8331d2adf574a0ede698a763be76ec\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="C:\Users\Kripa\.android\build-cache\e7be5b87d7571c36c7b574ddf92f4f75de81b202\output\jars\classes.jar"
+        jumboMode="false"
+        optimize="true"
+        revision="26.0.1"
+        sha1="646439081688c43e04ec4aa7ba6915ddfdcc337f">
+        <dex dex="C:\Users\Kripa\AndroidStudioProjects\GuessTheMovie\app\build\intermediates\transforms\dex\release\folders\1000\10\classes_08e21f5dcfbaea2a253cb54e6efd18c0c17f4909\classes.dex" />
     </item>
 
 </items>
