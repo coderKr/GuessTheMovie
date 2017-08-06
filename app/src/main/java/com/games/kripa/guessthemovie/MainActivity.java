@@ -37,6 +37,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
 import com.google.android.gms.common.ConnectionResult;
@@ -60,6 +61,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import io.fabric.sdk.android.Fabric;
 
 
 /**
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         super.setContentView(R.layout.activity_main);
+        Fabric.with(this, new Crashlytics());
         scoreDb = new ScoreDbHelper(getApplicationContext());
         //Uncomment when you want to delete db
 //        SQLiteDatabase db = scoreDb.getWritableDatabase();
@@ -320,6 +324,7 @@ public class MainActivity extends AppCompatActivity
     // Finish the game. Sometimes, this is your only choice.
     public void onFinishClicked(View view, String status) throws JSONException {
         showSpinner();
+
         if(status.equals("WON")){
             updateLeaderboards(true);
         }
@@ -643,6 +648,7 @@ public class MainActivity extends AppCompatActivity
                         processResult(result);
                     }
                 });
+        insertDb(getCurrentPlayerId());
 
         makeSimpleDialog(this, "Match Request has been send!").show();
     }
@@ -833,6 +839,8 @@ public class MainActivity extends AppCompatActivity
                 "An invitation has arrived from "
                         + invitation.getInviter().getDisplayName(), TOAST_DELAY)
                 .show();
+
+
     }
 
     @Override
@@ -953,7 +961,7 @@ public class MainActivity extends AppCompatActivity
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_SCORE, initialValue);
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES, initialValue);
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES, initialValue);
-        values.put(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS, initialValue);
+        values.put(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS, "'lost'");
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId;
@@ -972,7 +980,7 @@ public class MainActivity extends AppCompatActivity
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_SCORE, "'"+ score+"'");
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES, "'"+matches+"'");
         values.put(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES, "'"+lost+"'");
-        values.put(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS,  "'"+status+"'");
+        values.put(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS, "'"+status+"'");
 
 
         // Which row to update, based on the ID
@@ -1018,13 +1026,18 @@ public class MainActivity extends AppCompatActivity
         if(c.moveToFirst() || c.getCount() != 0){
             results[0] = playerId;
             results[1] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_SCORE));
-            results[2] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES));
-            results[3] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES));
+            results[2] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_TOTAL_MATCHES));
+            results[3] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_LOST_MATCHES));
             results[4] = c.getString(c.getColumnIndex(ScoreContract.ScoreEntry.COLUMN_NAME_STATUS));
         }
         db.close();
-        return results;
-
+        if(results[0] == null){
+            insertDb(playerId);
+            String[] initialValues = {playerId, "'0'", "'0'","'0'","'lost'"};
+            return initialValues;
+        } else {
+            return results;
+        }
     }
 
     public static Dialog makeSimpleDialog(Activity activity, String text) {
@@ -1091,6 +1104,20 @@ public class MainActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        MenuItem signOutBtnVisible = menu.findItem(R.id.action_logout);
+        if(mGoogleApiClient.isConnected())
+        {
+            signOutBtnVisible.setVisible(true);
+        }
+        else
+        {
+            signOutBtnVisible.setVisible(false);
+        }
+        return true;
+    }
+
 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -1107,8 +1134,8 @@ public class MainActivity extends AppCompatActivity
 
     public void logOut(){
         mSignInClicked = false;
-        Games.signOut(mGoogleApiClient);
         if (mGoogleApiClient.isConnected()) {
+            Games.signOut(mGoogleApiClient);
             mGoogleApiClient.disconnect();
         }
         setViewVisibility();
